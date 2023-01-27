@@ -21,19 +21,33 @@ export const Body: FC<ITable> = ({
     <div className={styles.body}>
       {rows.map((row, index) => (
         <div key={index} className={styles.row}>
-          {headers.map(({ id }, index) => (
-            <Cell
-              id={row[keyName]}
-              key={index}
-              textDisplay={textDisplay ? textDisplay[index] : "start"}
-              content={row[id]}
-              percentage={percentages[index]}
-              type={elements[index]}
-              onClick={onClick}
-              onClick2={onClick2}
-              onClick3={onClick3}
-            />
-          ))}
+          {headers.map(({ id }, index) => {
+            let content: string, keyname: string;
+            if (id.toString().includes(".")) {
+              const props = id.toString().split(".");
+              let deepProp = props.reduce((acc, curr, index) => {
+                return acc[props[index]];
+              }, row);
+              content = deepProp;
+              keyname = row[props.reverse[0]];
+            } else {
+              content = row[id];
+              keyname = row[keyName];
+            }
+            return (
+              <Cell
+                id={keyname}
+                key={index}
+                textDisplay={textDisplay ? textDisplay[index] : "start"}
+                content={content}
+                percentage={percentages[index]}
+                type={elements[index]}
+                onClick={onClick}
+                onClick2={onClick2}
+                onClick3={onClick3}
+              />
+            );
+          })}
         </div>
       ))}
     </div>

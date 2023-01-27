@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { Sidebar, TopBar, TitleScreen, Table } from "components";
+import { Sidebar, TopBar, TitleScreen, Table, Searcher } from "components";
 import { useAppDispatch, useAppSelector } from "hooks/hooks";
 import { NextPage } from "next";
 
@@ -68,15 +68,12 @@ const PharmacyCatalog: NextPage = (props) => {
         <Sidebar />
         <div className={styles.content_col}>
           <div className={styles.content}>
-            <form onSubmit={(e) => onSubmitMedicineKey(e)}>
-              <input
-                type="search"
-                placeholder="Busca una clave de medicina"
-                className={styles.buscador}
-                value={medicineKey}
-                onChange={(e) => onMedicineKeyChange(e)}
-              />
-            </form>
+            <Searcher
+              placeholder="Busca por clave o nombre de medicamento"
+              onChangeSearchValue={onMedicineKeyChange}
+              onSubmitSearch={onSubmitMedicineKey}
+              value={medicineKey}
+            />
           </div>
           <Table {...tableInformation} />
         </div>

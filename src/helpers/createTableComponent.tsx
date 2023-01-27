@@ -58,6 +58,18 @@ export const createTableComponent = (details: TableComponentDetails) => {
           </button>
         </div>
       );
+    case "ACTIONS-P-D":
+      return (
+        <div className={styles.actions}>
+          <Print id={id} showLabel={false} onClick={() => onClick(id)} />
+          <button className={styles.button} onClick={() => onClick2(id)}>
+            <FontAwesomeIcon icon={faPenToSquare} />
+          </button>
+          <button className={styles.button} onClick={() => onClick3(id)}>
+            <FontAwesomeIcon icon={faTrash} />
+          </button>
+        </div>
+      );
     case "DETAILS":
       return (
         <button className={styles.buttonDetails} onClick={() => onClick(id)}>

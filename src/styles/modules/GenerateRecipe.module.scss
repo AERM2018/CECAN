@@ -2,18 +2,23 @@
 @use "../abstracts/variables";
 
 .container {
-    display: flex;
-    flex-direction: column;
-    background-color: colors.$color-white;
+  display: flex;
+  flex-direction: column;
+  background-color: colors.$color-white;
 }
 
 .content {
-    display: flex;
-    padding: 0 4rem;
+  display: flex;
+  padding: 0 4rem;
 }
 
 .generate {
-    display: flex;
-    width: calc(100% - variables.$sidebar-width);
-    flex-direction: column;
+  display: flex;
+  width: calc(100% - variables.$sidebar-width);
+  flex-direction: column;
+}
+
+.content_col {
+  display: flex;
+  flex-direction: column;
 }

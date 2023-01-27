@@ -1,0 +1,30 @@
+.form {
+  margin-left: 1rem;
+}
+
+.recipe_data {
+  display: flex;
+  flex-direction: column;
+  height: 10rem;
+  justify-content: space-around;
+}
+
+.recipe_data_item {
+  display: flex;
+  flex-direction: row;
+}
+
+.container {
+  margin: 0rem 0 5rem 1rem;
+  display: flex;
+  flex-direction: column;
+}
+
+.container_table_medicines {
+  margin: 5rem 0 5rem 1rem;
+}
+
+.font_bold {
+  margin-right: 1rem;
+  font-weight: bold;
+}

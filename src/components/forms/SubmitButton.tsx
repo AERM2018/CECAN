@@ -1,7 +1,13 @@
 import styles from "./Forms.module.scss";
-export const SubmitButton = ({ text }: { text: string }) => {
+export const SubmitButton = ({
+  text,
+  isBlocked = false,
+}: {
+  text: string;
+  isBlocked?: boolean;
+}) => {
   return (
-    <button type="submit" className={styles.submit}>
+    <button disabled={isBlocked} type="submit" className={styles.submit}>
       <span>{text}</span>
     </button>
   );

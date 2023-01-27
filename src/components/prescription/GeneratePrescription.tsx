@@ -7,7 +7,7 @@ import {
   setActiveIndication,
 } from "store/recipes/recipesSlice";
 import { useAppDispatch, useAppSelector } from "../../hooks/hooks";
-import { AddMedicineButton, Table } from "components";
+import { AddMedicineButton, SubmitButton, Table } from "components";
 
 import styles from "./Prescription.module.scss";
 import { PickAMedicine } from "./PickAMedicine";
@@ -102,7 +102,7 @@ export const GeneratePrescription: FC = () => {
           onChange={formik.handleChange}
           value={formik.values.indications!}
         />
-        <button type="submit">Generar Receta</button>
+        <SubmitButton text="Generar receta" />
       </form>
     </>
   );

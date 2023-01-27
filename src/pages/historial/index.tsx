@@ -1,7 +1,8 @@
-import React, { useEffect } from "react";
+import { useRouter } from "next/router";
+import React, { useEffect, useState } from "react";
 import { NextPage } from "next";
 import styles from "styles/modules/GenerateRecipe.module.scss";
-import { Sidebar, TitleScreen, TopBar } from "components";
+import { Searcher, Sidebar, TitleScreen, TopBar } from "components";
 import { Table } from "../../components/table/Table";
 import { useAppDispatch, useAppSelector } from "../../hooks/hooks";
 import {
@@ -12,6 +13,7 @@ import { ITable } from "../../interfaces/ITable.interface";
 import {
   startDeletePrescription,
   startDownloadRecipe,
+  startFilterPrescriptionHistory,
   startGetHistorialPrescriptions,
 } from "store/recipes/thunks";
 import { Modal } from "@mui/material";
@@ -23,9 +25,15 @@ const Historial: NextPage = () => {
   const { user } = useAppSelector((state) => state.auth);
   const dispatch = useAppDispatch();
 
+  const [folio, setfolio] = useState("");
+
+  const router = useRouter();
+
   useEffect(() => {
-    dispatch(startGetHistorialPrescriptions(user.id));
-  }, [dispatch]);
+    if (!prescriptions || folio == "") {
+      dispatch(startGetHistorialPrescriptions(user.id));
+    }
+  }, [dispatch, folio]);
 
   const tableElements: ITable = {
     headers: [
@@ -37,7 +45,7 @@ const Historial: NextPage = () => {
     ],
     keyName: "id",
     rows: prescriptions,
-    percentages: [5, 25, 40, 10, 20],
+    percentages: [5, 20, 40, 15, 20],
     elements: ["TEXT", "TEXT", "TEXT", "TEXT", "ACTIONS-P-E-D"],
     textDisplay: ["center", "center", "center", "center", "center"],
     onClick: (id: string) => {
@@ -46,11 +54,21 @@ const Historial: NextPage = () => {
     onClick2: (id: string) => {
       // Edit prescription
       dispatch(setActivePrescriptionHistory(id));
-      console.log(id);
+      router.push("/supplyRecipe");
     },
     onClick3: (id: string) => {
       dispatch(startDeletePrescription(id));
     },
+  };
+
+  const onFolioChange = (e) => {
+    e.preventDefault();
+    setfolio(e.target.value);
+  };
+
+  const onSubmitFolio = (e) => {
+    e.preventDefault();
+    dispatch(startFilterPrescriptionHistory(folio, prescriptions));
   };
 
   return (
@@ -59,16 +77,26 @@ const Historial: NextPage = () => {
       <TitleScreen title="Historial de recetas" />
       <div className={styles.content}>
         <Sidebar />
-        <Table {...tableElements} />
+        <div className={styles.content_col}>
+          <div className={styles.content}>
+            <Searcher
+              placeholder="Busca el folio de la receta"
+              onChangeSearchValue={onFolioChange}
+              onSubmitSearch={onSubmitFolio}
+              value={folio}
+            />
+          </div>
+          <Table {...tableElements} />
+        </div>
 
-        {activePrescription && (
+        {/* {activePrescription && (
           <Modal
             open={activePrescription !== null}
             onClose={() => dispatch(setActivePrescriptionHistory(null))}
           >
             <div className="modalContainer">asdfasdf</div>
           </Modal>
-        )}
+        )} */}
       </div>
     </div>
   );

@@ -9,3 +9,4 @@ export * from "./addMedicineButton";
 export * from "./baseStructure";
 export * from "./forms";
 export * from "./selectUser";
+export * from "./searcher";

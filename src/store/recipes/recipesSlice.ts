@@ -3,6 +3,10 @@ import {
   IMedicine,
   IMedicineCatalog,
 } from "interfaces/IMedicineStock.interface";
+import {
+  IPrescription,
+  IPrescriptionToSupply,
+} from "interfaces/IPrescription.interface";
 import { ITable } from "interfaces/ITable.interface";
 export interface IPharmacyState {
   medicines: IMedicineCatalog[] | null;
@@ -55,6 +59,22 @@ export const recipesSlice = createSlice({
         }
       }
     },
+
+    modifyMedicinesQuantityToSupply: (
+      state,
+      action: PayloadAction<{ key: string; quantity: number }>
+    ) => {
+      const { key, quantity } = action.payload;
+      const medicine = state.activeRecipe.medicines.find(
+        (medicine) => medicine.medicine_key === key
+      );
+      if (medicine) {
+        if (quantity >= 0 && quantity <= medicine.pieces) {
+          medicine.pieces_supplied = quantity;
+        }
+      }
+    },
+
     addActiveMedicine: (state, action: PayloadAction<IMedicineCatalog>) => {
       const medicineAlreadyInRecipe = state.activeMedicines?.find(
         (medicine) => medicine.key === action.payload.key
@@ -77,6 +97,9 @@ export const recipesSlice = createSlice({
             ]);
       }
     },
+    setActiveRecipe: (state, action: PayloadAction<IPrescriptionToSupply>) => {
+      state.activeRecipe = action.payload;
+    },
   },
   extraReducers: (builder) => {},
 });
@@ -86,6 +109,8 @@ export const {
   setActiveMedicines,
   setActiveIndication,
   modifyActiveMedicinesQuantity,
+  modifyMedicinesQuantityToSupply,
   addActiveMedicine,
   removeActiveMedicine,
+  setActiveRecipe,
 } = recipesSlice.actions;

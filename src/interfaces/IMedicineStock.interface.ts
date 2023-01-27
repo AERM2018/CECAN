@@ -17,3 +17,12 @@ export interface IMedicineCatalog {
   key: string;
   name: string;
 }
+
+export interface IMedicineSuscription {
+  prescription_id: string;
+  medicine_key: string;
+  details: IMedicine;
+  pieces: number;
+  pieces_supplied: number;
+  last_pieces_supplied: number;
+}
