@@ -1,14 +1,31 @@
 @use "../colors";
 
 .container {
-    display: flex;
-    flex-direction: column;
-    width: 100vw;
-    height: 100vh;
-    background-color: colors.$color-white;
+  display: flex;
+  flex-direction: column;
+  width: 100vw;
+  height: 100vh;
+  background-color: colors.$color-white;
 }
 
 .content {
-    display: flex;
-    padding: 0 4rem;
+  display: flex;
+  padding: 0 4rem;
+}
+
+.content_col {
+  display: flex;
+  flex-direction: column;
+}
+
+.buscador {
+  background: url(https://cdn0.iconfinder.com/data/icons/slim-square-icons-basics/100/basics-19-32.png)
+    no-repeat 0px 5px;
+  background-size: 24px;
+  width: 500px;
+  border: transparent;
+  border-bottom: solid 1px #ccc;
+  padding: 10px 10px 10px 30px;
+  outline: none;
+  margin: 0 0 2.5rem 0;
 }

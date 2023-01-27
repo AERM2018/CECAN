@@ -49,7 +49,6 @@ export const startGetPharmacyData = () => async (dispatch: Dispatch) => {
             dataMedicines.push(medicineStock);
           }
         });
-
         dispatch(setPharmacyData(dataMedicines));
       }
     } else {
@@ -61,6 +60,16 @@ export const startGetPharmacyData = () => async (dispatch: Dispatch) => {
     console.log(error);
   }
 };
+export const startFilterMedicine =
+  (concidence: string, medicines: IMedicineStock[]) =>
+  async (dispatch: Dispatch) => {
+    medicines = medicines.filter((medicine: IMedicineStock) =>
+      concidence != ""
+        ? medicine.id == concidence || medicine.name == concidence
+        : true
+    );
+    dispatch(setPharmacyData(medicines));
+  };
 
 export const startAddAMedicine =
   ({ key, name }, resetForm: Function) =>
