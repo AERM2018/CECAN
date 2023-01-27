@@ -10,6 +10,7 @@ type CellProps = {
   id: string;
   onClick?: (id: string) => void;
   onClick2?: (id: string) => void;
+  onClick3?: (id: string) => void;
 };
 
 export const Cell: FC<CellProps> = ({
@@ -20,12 +21,14 @@ export const Cell: FC<CellProps> = ({
   id,
   onClick,
   onClick2,
+  onClick3,
 }) => {
   const component = createTableComponent({
     type,
     content,
     onClick,
     onClick2,
+    onClick3,
     id,
   });
   return (

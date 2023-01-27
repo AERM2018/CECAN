@@ -14,6 +14,7 @@ export const Body: FC<ITable> = ({
   keyName = "key",
   onClick,
   onClick2,
+  onClick3,
 }) => {
   if (!rows) return null;
   return (
@@ -30,6 +31,7 @@ export const Body: FC<ITable> = ({
               type={elements[index]}
               onClick={onClick}
               onClick2={onClick2}
+              onClick3={onClick3}
             />
           ))}
         </div>

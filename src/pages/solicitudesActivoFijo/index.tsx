@@ -71,7 +71,7 @@ const FixedAssetRequests = () => {
 
       {activeRequest && (
         <div className={styles.card}>
-          <Print id={activeRequest.id} onClick={handlePrint} />
+          <Print id={activeRequest.id} onClick={handlePrint} showLabel={true} />
 
           {activeRequest?.fixed_assets.map(({ id, details }) => (
             <div className={styles.itemCard} key={id}>

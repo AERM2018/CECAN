@@ -46,6 +46,7 @@ interface ITHeaders {
 export interface IOnClick {
   onClick?: any;
   onClick2?: any;
+  onClick3?: any;
 }
 
 type HeadersButtons =

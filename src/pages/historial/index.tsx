@@ -11,6 +11,7 @@ import {
 import { ITable } from "../../interfaces/ITable.interface";
 import {
   startDeletePrescription,
+  startDownloadRecipe,
   startGetHistorialPrescriptions,
 } from "store/recipes/thunks";
 import { Modal } from "@mui/material";
@@ -19,10 +20,11 @@ const Historial: NextPage = () => {
   const { prescriptions, activePrescription } = useAppSelector(
     (state) => state.historial
   );
+  const { user } = useAppSelector((state) => state.auth);
   const dispatch = useAppDispatch();
 
   useEffect(() => {
-    dispatch(startGetHistorialPrescriptions());
+    dispatch(startGetHistorialPrescriptions(user.id));
   }, [dispatch]);
 
   const tableElements: ITable = {
@@ -35,16 +37,18 @@ const Historial: NextPage = () => {
     ],
     keyName: "id",
     rows: prescriptions,
-    percentages: [5, 25, 40, 20, 10],
+    percentages: [5, 25, 40, 10, 20],
     elements: ["TEXT", "TEXT", "TEXT", "TEXT", "ACTIONS-P-E-D"],
     textDisplay: ["center", "center", "center", "center", "center"],
     onClick: (id: string) => {
+      dispatch(startDownloadRecipe(id));
+    },
+    onClick2: (id: string) => {
       // Edit prescription
-
       dispatch(setActivePrescriptionHistory(id));
       console.log(id);
     },
-    onClick2: (id: string) => {
+    onClick3: (id: string) => {
       dispatch(startDeletePrescription(id));
     },
   };

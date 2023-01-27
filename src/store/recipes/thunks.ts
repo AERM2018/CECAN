@@ -37,6 +37,25 @@ export const startGenerateRecipe =
 
     download(blob, "recipe.pdf", "application/pdf");
   };
+
+export const startDownloadRecipe =
+  (id: string) => async (dispatch: Dispatch) => {
+    const res = await fetch(
+      `https://staging-app.site/api/v1/prescriptions/${id}?pdf=true`,
+      {
+        method: "GET",
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          "Content-Type": "application/json",
+        },
+      }
+    );
+
+    const blob = await res.blob();
+
+    download(blob, "recipe.pdf", "application/pdf");
+  };
+
 export const startGetMedicines = () => async (dispatch: Dispatch) => {
   const {
     data: { data, ok },

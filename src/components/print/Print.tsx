@@ -6,9 +6,11 @@ import styles from "styles/modules/Components.module.scss";
 export const Print = ({
   id,
   onClick,
+  showLabel,
 }: {
   id: string;
   onClick?: () => void;
+  showLabel: boolean;
 }) => {
   const handlePrint = () => {
     onClick();
@@ -16,7 +18,7 @@ export const Print = ({
 
   return (
     <button className={styles.button} onClick={handlePrint}>
-      <h2>Imprimir</h2>
+      {showLabel && <h2>Imprimir</h2>}
       <FontAwesomeIcon icon={faPrint} />
     </button>
   );
