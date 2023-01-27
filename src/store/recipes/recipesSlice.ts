@@ -11,6 +11,7 @@ import { ITable } from "interfaces/ITable.interface";
 export interface IPharmacyState {
   medicines: IMedicineCatalog[] | null;
   activeMedicines: IMedicine[] | null;
+  activeRecipe: IPrescriptionToSupply | null;
   activeIndication: string | null;
   loading: boolean;
 }
@@ -19,6 +20,7 @@ const initialState: IPharmacyState = {
   medicines: null,
   activeMedicines: null,
   activeIndication: null,
+  activeRecipe: null,
   loading: false,
 };
 

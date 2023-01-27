@@ -2,7 +2,7 @@ import { FC } from "react";
 import styles from "./Table.module.scss";
 
 type Props = {
-  headers: { id: string; label: string }[];
+  headers: any[];
   percentages: number[];
   textDisplay?: CanvasTextAlign[];
 };

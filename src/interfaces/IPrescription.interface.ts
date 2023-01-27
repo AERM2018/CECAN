@@ -8,8 +8,13 @@ export interface IPrescription {
 }
 
 export interface IPrescriptionToSupply {
+  id: string;
+  folio: string;
   patient_name: string;
   observations: string;
   instructions: string;
+  prescription_status: {
+    name: string;
+  };
   medicines: IMedicineSuscription[];
 }

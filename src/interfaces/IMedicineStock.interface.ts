@@ -25,4 +25,6 @@ export interface IMedicineSuscription {
   pieces: number;
   pieces_supplied: number;
   last_pieces_supplied: number;
+  "details.name"?: string;
+  "details.key"?: string;
 }

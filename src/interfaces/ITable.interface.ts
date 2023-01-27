@@ -6,7 +6,7 @@ import {
   IMedicineStock,
   IMedicine,
   IMedicineCatalog,
-  IMedicineDetails,
+  IMedicineSuscription,
 } from "./IMedicineStock.interface";
 import { User } from "./IUser.interface";
 
@@ -22,6 +22,7 @@ export interface ITable extends IOnClick {
     | IFixedAsset[]
     | Department[]
     | IMedicineStock[]
+    | IMedicineSuscription[]
     | null;
   percentages: number[];
   keyName?: "id" | "folio" | "key" | "medicine_key";
@@ -40,7 +41,7 @@ interface ITHeaders {
     | keyof Department
     | HeadersButtons
     | keyof User
-    | keyof IMedicineDetails;
+    | keyof IMedicineSuscription;
   label: string;
 }
 

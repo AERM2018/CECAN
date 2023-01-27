@@ -164,7 +164,7 @@ export const startDeletePrescription =
         dispatch(deletePrescription(id));
         toast.success("Receta eliminada correctamente");
       } else {
-        toast.error(data.error);
+        toast.error("Ocurrio un error, intentelo más tarde.");
       }
     } catch (error) {
       toast.error(error.response.data.error);
