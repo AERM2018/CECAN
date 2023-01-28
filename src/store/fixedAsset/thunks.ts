@@ -155,7 +155,7 @@ export const startPrintingFixedReport =
   (id: string) => async (dispatch: Dispatch) => {
     console.log("caca");
     const res = await fetch(
-      `https://staging-app.site/api/v1/fixed_assets_requests/${id}/?pdf=true`,
+      `${process.env.API_BASE_URL}/fixed_assets_requests/${id}/?pdf=true`,
       {
         method: "GET",
         headers: {

@@ -7,6 +7,7 @@ import {
   IMedicine,
   IMedicineCatalog,
   IMedicineSuscription,
+  IMedicineTotalStock,
 } from "./IMedicineStock.interface";
 import { User } from "./IUser.interface";
 
@@ -23,6 +24,7 @@ export interface ITable extends IOnClick {
     | Department[]
     | IMedicineStock[]
     | IMedicineSuscription[]
+    | IMedicineTotalStock[]
     | null;
   percentages: number[];
   keyName?: "id" | "folio" | "key" | "medicine_key";

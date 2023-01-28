@@ -1,7 +1,7 @@
 export interface IInventory {
   medicine: Medicine;
   stocks: Stock[];
-  pieces_left_by_semaforization_color: PiecesLeftBySemaforizationColor;
+  pieces_left_by_semaforization_color?: PiecesLeftBySemaforizationColor;
   total_pieces: number;
   total_pieces_left: number;
 }

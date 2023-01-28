@@ -13,7 +13,7 @@ export const getToken = () =>
 export const getAuthorizationHeader = () => `Bearer ${getToken()}`;
 
 export const cecanApiPDF = axios.create({
-  baseURL: "https://staging-app.site/api/v1",
+  baseURL: process.env.API_BASE_URL,
   headers: {
     responseType: "blob",
     // "Content-Type": "apllication/pdf",
@@ -22,7 +22,7 @@ export const cecanApiPDF = axios.create({
 });
 
 const cecanApi = axios.create({
-  baseURL: "https://staging-app.site/api/v1",
+  baseURL: process.env.API_BASE_URL,
   headers: {
     "Content-Type": "application/json",
     Authorization: `Bearer ${getAuthorizationHeader()}`,

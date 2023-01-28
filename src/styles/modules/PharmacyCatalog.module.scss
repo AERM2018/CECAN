@@ -1,4 +1,5 @@
 @use "../colors";
+@use "../../styles/abstracts/variables";
 
 .container {
   display: flex;
@@ -11,9 +12,23 @@
 .content {
   display: flex;
   padding: 0 4rem;
+  margin-bottom: 5rem;
 }
 
 .content_col {
   display: flex;
   flex-direction: column;
+}
+
+.button {
+  width: 100%;
+  height: 4rem;
+  border-radius: 1rem;
+  border: none;
+  color: colors.$color-white;
+  background-color: colors.$primary;
+  font-size: variables.$h3-font-size;
+  font-family: "Roboto", sans-serif;
+  margin-top: 1rem;
+  margin-left: 3rem;
 }

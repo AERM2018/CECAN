@@ -21,7 +21,6 @@ const SupplyRecipe: NextPage = () => {
   const { activeRecipe } = useAppSelector((state) => state.recipes);
 
   useEffect(() => {
-    console.log({ activePrescription });
     dispatch(startGettingRecipeById(activePrescription.id));
   }, []);
 
@@ -30,20 +29,19 @@ const SupplyRecipe: NextPage = () => {
     headers: [
       { id: "details.key", label: "Clave" },
       { id: "details.name", label: "Nombre" },
-      { id: "pieces", label: "Cantidad solicitada" },
-      { id: "pieces_supplied", label: "Cantidad suminstrada" },
+      { id: "pieces", label: "Cant. solicitada" },
+      { id: "last_pieces_supplied", label: "Ultima cant. suminstrada" },
+      { id: "pieces_supplied", label: "Cant. a suminstrar" },
     ],
     rows: activeRecipe.medicines,
     keyName: "medicine_key",
-    percentages: [15, 30, 20, 20],
+    percentages: [15, 25, 15, 15, 15],
     textDisplay: ["center", "center", "center", "center"] as CanvasTextAlign[],
-    elements: ["TEXT", "TEXT", "TEXT", "COUNTER"],
+    elements: ["TEXT", "TEXT", "TEXT", "TEXT", "COUNTER"],
     onClick: (key: string, quantity: number) => {
-      console.log({ key, quantity });
       dispatch(modifyMedicinesQuantityToSupply({ key, quantity }));
     },
   };
-  console.log({ a: activeRecipe.medicines });
   return (
     <BaseStructure pageName="Surtir receta">
       <div className={styles.container}>
@@ -58,6 +56,10 @@ const SupplyRecipe: NextPage = () => {
               <p>{activeRecipe.folio}</p>
             </div>
             <div className={styles.recipe_data_item}>
+              <p className={styles.font_bold}>Estatus: </p>
+              <p>{activeRecipe.prescription_status.name}</p>
+            </div>
+            <div className={styles.recipe_data_item}>
               <p className={styles.font_bold}>Nombre del paciente: </p>
               <p>{activeRecipe.patient_name}</p>
             </div>
@@ -69,7 +71,10 @@ const SupplyRecipe: NextPage = () => {
         <div className={styles.contaier}>
           <Formik
             initialValues={{
-              observations: "",
+              observations:
+                activeRecipe.observations == ""
+                  ? ""
+                  : activeRecipe.observations,
             }}
             onSubmit={(values, { resetForm }) => {
               dispatch(
@@ -87,13 +92,13 @@ const SupplyRecipe: NextPage = () => {
                   name="observations"
                   placeholder="Observaciones (opcionales)"
                   type="text"
-                />
-                <SubmitButton
-                  isBlocked={
-                    activeRecipe.prescription_status.name != "Pendiente"
+                  disabled={
+                    activeRecipe.prescription_status.name == "Completada"
                   }
-                  text="Suministar receta"
                 />
+                {["Pendiente", "Incompleta"].includes(
+                  activeRecipe.prescription_status.name
+                ) && <SubmitButton text="Suministar receta" />}
               </form>
             )}
           </Formik>

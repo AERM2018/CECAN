@@ -1,5 +1,8 @@
 import { FC, useEffect, useState } from "react";
-import { IMedicine } from "../../interfaces/IMedicineStock.interface";
+import {
+  IMedicine,
+  IMedicineStock,
+} from "../../interfaces/IMedicineStock.interface";
 import { ITable } from "../../interfaces/ITable.interface";
 import {
   modifyActiveMedicinesQuantity,
@@ -16,13 +19,16 @@ import { useFormik } from "formik";
 import * as Yup from "yup";
 import { startGenerateRecipe } from "store/recipes/thunks";
 import { startGetMedicines } from "../../store/recipes/thunks";
+import { startFilterMedicine } from "store/pharmacy/thunks";
 export const GeneratePrescription: FC = () => {
   const dispatch = useAppDispatch();
 
   const {
-    recipes: { activeMedicines, medicines, activeIndication },
+    recipes: { activeMedicines, activeIndication },
     ui: { isModalOpen },
   } = useAppSelector((state) => state);
+
+  const [medicineKey, setmedicineKey] = useState("");
 
   const tableElements: ITable = {
     headers: [
@@ -44,10 +50,6 @@ export const GeneratePrescription: FC = () => {
   };
 
   const openModal = () => dispatch(toggleModal());
-
-  useEffect(() => {
-    dispatch(startGetMedicines());
-  }, []);
 
   const formik = useFormik({
     initialValues: {
@@ -76,13 +78,7 @@ export const GeneratePrescription: FC = () => {
 
       <AddMedicineButton showModal={openModal} />
 
-      {isModalOpen && (
-        <PickAMedicine
-          isModalOpen={isModalOpen}
-          activeMedicines={activeMedicines}
-          medicines={medicines}
-        />
-      )}
+      {isModalOpen && <PickAMedicine isModalOpen={isModalOpen} />}
 
       <form onSubmit={formik.handleSubmit} className={styles.indications}>
         <input

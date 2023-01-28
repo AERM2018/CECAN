@@ -1,5 +1,12 @@
 import { useEffect, useState } from "react";
-import { Sidebar, TopBar, TitleScreen, Table, Searcher } from "components";
+import {
+  Sidebar,
+  TopBar,
+  TitleScreen,
+  Table,
+  Searcher,
+  SubmitButton,
+} from "components";
 import { useAppDispatch, useAppSelector } from "hooks/hooks";
 import { NextPage } from "next";
 
@@ -13,41 +20,51 @@ import {
 import { ITable } from "../../interfaces/ITable.interface";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { IMedicineStock } from "interfaces/IMedicineStock.interface";
 
 const PharmacyCatalog: NextPage = (props) => {
-  let { pharmacyData } = useAppSelector((state) => state.pharmacy);
+  let { pharmacyData, pharmacyDataLessQty } = useAppSelector(
+    (state) => state.pharmacy
+  );
   const dispatch = useAppDispatch();
 
   const [medicineKey, setmedicineKey] = useState("");
+  const [showLessQty, setShowLessQty] = useState(false);
 
   useEffect(() => {
     if (!pharmacyData || medicineKey == "") {
-      dispatch(startGetPharmacyData());
+      dispatch(startGetPharmacyData(showLessQty));
     }
-  }, [medicineKey]);
+  }, [medicineKey, showLessQty]);
 
   const tableInformation: ITable = {
-    headers: [
-      { id: "lot_number", label: "Lote" },
-      { id: "id", label: "Clave" },
-      { id: "name", label: "Nombre" },
-      { id: "expires_at", label: "Expira el" },
-      { id: "pieces", label: "Cantidad" },
+    headers: !showLessQty
+      ? [
+          { id: "lot_number", label: "Lote" },
+          { id: "key", label: "Clave" },
+          { id: "name", label: "Nombre" },
+          { id: "expires_at", label: "Expira el" },
+          { id: "pieces_left", label: "Cantidad Disponible" },
+        ]
+      : [
+          { id: "key", label: "Clave" },
+          { id: "name", label: "Nombre" },
+          { id: "pieces_left", label: "Cantidad total disponible" },
+        ],
+    rows: !showLessQty ? pharmacyData : pharmacyDataLessQty,
+    elements: [
+      "TEXT",
+      "TEXT",
+      "TEXT",
+      ...(!showLessQty ? ["TEXT", "TEXT", "TEXT"] : []),
     ],
-    rows: pharmacyData,
-    elements: ["TEXT", "TEXT", "TEXT", "TEXT", "TEXT"],
-    percentages: [25, 20, 20, 20, 15],
+    percentages: !showLessQty ? [15, 15, 30, 20, 15] : [30, 30, 30],
     textDisplay: [
       "center",
       "center",
       "center",
-      "center",
-      "center",
-      "center",
+      ...(!showLessQty ? ["center", "center", "center"] : []),
     ] as CanvasTextAlign[],
-    onClick: (id: string) => {
-      console.log(id);
-    },
   };
 
   const onMedicineKeyChange = (e) => {
@@ -57,7 +74,21 @@ const PharmacyCatalog: NextPage = (props) => {
 
   const onSubmitMedicineKey = (e) => {
     e.preventDefault();
-    dispatch(startFilterMedicine(medicineKey, pharmacyData));
+    if (showLessQty) {
+      dispatch(
+        startFilterMedicine(
+          medicineKey,
+          pharmacyDataLessQty as IMedicineStock[],
+          "catalogLessQty"
+        )
+      );
+    } else {
+      dispatch(startFilterMedicine(medicineKey, pharmacyData, "catalog"));
+    }
+  };
+
+  const onShowLessQtyStocks = () => {
+    setShowLessQty(!showLessQty);
   };
 
   return (
@@ -74,6 +105,14 @@ const PharmacyCatalog: NextPage = (props) => {
               onSubmitSearch={onSubmitMedicineKey}
               value={medicineKey}
             />
+            <button
+              className={styles.button}
+              onClick={() => onShowLessQtyStocks()}
+            >
+              {!showLessQty
+                ? "Ver medicina con poco stock"
+                : "Ver todos los stocks"}
+            </button>
           </div>
           <Table {...tableInformation} />
         </div>

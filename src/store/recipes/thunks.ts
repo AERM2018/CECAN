@@ -8,7 +8,11 @@ import download from "downloadjs";
 import { setMedicines } from "./recipesSlice";
 import { IMedicinesResponse } from "../../interfaces/IMedicinesResponse.response.interface";
 import { toast } from "react-hot-toast";
-import { IPrescriptionResponse } from "../../interfaces/IPrescriptionsResponse.response.interface";
+import {
+  IPrescriptionResponse,
+  IPrescriptionWithMedicinesResponse,
+  PrescriptionData,
+} from "../../interfaces/IPrescriptionsResponse.response.interface";
 import { Headers } from "../../components/table/Headers";
 import {
   deletePrescription,
@@ -20,7 +24,7 @@ import { URL } from "url";
 export const startGenerateRecipe =
   ({ patient_name, instructions, observations, medicines }: IPrescription) =>
   async (dispatch: Dispatch) => {
-    const res = await fetch("https://staging-app.site/api/v1/prescriptions", {
+    const res = await fetch(`${process.env.API_BASE_URL}/prescriptions`, {
       method: "POST",
       headers: {
         Authorization: `Bearer ${localStorage.getItem("token")}`,
@@ -45,7 +49,7 @@ export const startGenerateRecipe =
 export const startDownloadRecipe =
   (id: string) => async (dispatch: Dispatch) => {
     const res = await fetch(
-      `https://staging-app.site/api/v1/prescriptions/${id}?pdf=true`,
+      `${process.env.API_BASE_URL}/prescriptions/${id}?pdf=true`,
       {
         method: "GET",
         headers: {
@@ -62,50 +66,42 @@ export const startDownloadRecipe =
 
 export const startGettingRecipeById =
   (id: string) => async (dispatch: Dispatch) => {
-    const response = await fetch(
-      `https://staging-app.site/api/v1/prescriptions/${id}?`,
-      {
-        method: "GET",
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-          "Content-Type": "application/json",
-        },
-      }
+    const {
+      data: { data, ok },
+    } = await cecanApi.get<IPrescriptionWithMedicinesResponse>(
+      `/prescriptions/${id}`
     );
-    const res = await response.json();
-    console.log(res.data.prescription);
-    dispatch(setActiveRecipe(res.data.prescription));
+    data.prescription.medicines = data.prescription.medicines.map(
+      (medicine) => ({ ...medicine, pieces_supplied: 0 })
+    );
+    dispatch(setActiveRecipe(data.prescription));
   };
 
 export const startSupplyingARecipie =
   (id: string, recipie: IPrescriptionToSupply, observations: string) =>
   async (dispatch: Dispatch) => {
-    const response = await fetch(
-      `https://staging-app.site/api/v1/prescriptions/${id}/complete`,
-      {
-        method: "PUT",
-        headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
-          "Content-Type": "application/json",
-        },
-        body: JSON.stringify({
+    try {
+      const {
+        data: { data, ok },
+      } = await cecanApi.put<IPrescriptionWithMedicinesResponse>(
+        `/prescriptions/${id}/complete`,
+        JSON.stringify({
           medicines: recipie.medicines.map((medicine) => ({
             medicine_key: medicine.medicine_key,
             pieces_supplied: medicine.pieces_supplied,
           })),
           observations,
-        }),
+        })
+      );
+      if (ok) {
+        toast.success("Receta suministrada correctamente.");
+      } else {
+        toast.error("Error al obtener los medicamentos, intente de nuevo");
       }
-    );
-    const res = await response.json();
-    const { ok } = res;
-    if (ok) {
-      toast.success("Receta suministrada correctamente.");
-    } else {
-      toast.error("Error al obtener los medicamentos, intente de nuevo");
+      dispatch(setActiveRecipe(data.prescription));
+    } catch (error) {
+      toast.error(error.response.data.error);
     }
-    console.log(res.data.prescription);
-    dispatch(setActiveRecipe(res.data.prescription));
   };
 
 export const startGetMedicines = () => async (dispatch: Dispatch) => {

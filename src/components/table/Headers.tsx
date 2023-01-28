@@ -11,10 +11,6 @@ export const Headers: FC<Props> = ({ headers, percentages, textDisplay }) => {
   return (
     <div className={styles.headers}>
       {headers.map((header, index) => {
-        console.log("header", header);
-        // if (header.id.includes(".")) {
-        //   header.id = header.id.split(".").reverse[0];
-        // }
         return (
           <div
             key={header.id}

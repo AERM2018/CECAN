@@ -1,10 +1,16 @@
 export interface IMedicineStock {
   key: string;
-  id: string;
+  id?: string;
   lot_number: string;
   name: string;
   expires_at: string;
-  pieces: number;
+  pieces_left: number;
+}
+
+export interface IMedicineTotalStock {
+  key: string;
+  name: string;
+  pieces_left: number;
 }
 
 export interface IMedicine {

@@ -1,14 +1,24 @@
 import { Field, useField } from "formik";
-import { FC } from "react";
+import { FC, useState } from "react";
 import styles from "./Forms.module.scss";
 type Props = {
   name: string;
   placeholder: string;
   type: string;
+  disabled?: boolean;
   options?: { value: string; label: any }[];
 };
-export const Input: FC<Props> = ({ name, placeholder, type, options }) => {
-  const [field, meta] = useField(name);
+export const Input: FC<Props> = ({
+  name,
+  placeholder,
+  type,
+  options,
+  disabled = false,
+}) => {
+  const [field, meta, helpers] = useField(name);
+  field.onChange = (e) => {
+    helpers.setValue(e.target.value);
+  };
 
   if (type === "select") {
     return (
@@ -34,11 +44,17 @@ export const Input: FC<Props> = ({ name, placeholder, type, options }) => {
   return (
     <div className={styles.containerInput}>
       <Field
-        className={styles.input}
         name={name}
         type={type}
-        placeholder={placeholder}
-        {...field}
+        render={({ field, form: { isSubmitting } }) => (
+          <input
+            {...field}
+            disabled={disabled}
+            className={styles.input}
+            placeholder={placeholder}
+            value={field.value}
+          />
+        )}
       />
 
       {meta.touched && meta.error && (
