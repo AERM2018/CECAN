@@ -1,8 +1,11 @@
 import {
+  faAdd,
   faBoxArchive,
   faBoxesStacked,
   faBuildingUser,
   faClipboardCheck,
+  faFileCirclePlus,
+  faFileMedical,
   faFilePrescription,
   faLaptopMedical,
   faPrescriptionBottleMedical,
@@ -45,6 +48,12 @@ const items = [
     text: "Historial de recetas",
     path: "historial",
     role: ["Admin", "Medico"],
+  },
+  {
+    icon: faFileCirclePlus,
+    text: "Generar Solicitud",
+    path: "generarSolicitud",
+    role: ["Admin", "Estandar"],
   },
   {
     icon: faShop,

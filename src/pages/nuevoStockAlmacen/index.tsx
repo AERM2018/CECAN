@@ -12,7 +12,7 @@ const AddStockStorehouse = () => {
   const { inventory } = useAppSelector((state) => state.storehouse);
 
   useEffect(() => {
-    dispatch(startGetStorehouseList());
+    dispatch(startGetStorehouseList({ searchStocks: false }));
   }, []);
 
   return (

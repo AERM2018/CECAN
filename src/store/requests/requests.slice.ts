@@ -1,20 +1,34 @@
-import { createAsyncThunk, createSlice, PayloadAction } from "@reduxjs/toolkit";
+import {
+  createAsyncThunk,
+  createSlice,
+  Dispatch,
+  PayloadAction,
+} from "@reduxjs/toolkit";
 import {
   IMedicine,
   IMedicineCatalog,
 } from "interfaces/IMedicineStock.interface";
+import {
+  Request,
+  RequestWithUtilities,
+} from "interfaces/IRequestStore.response.interface";
 import { ITable } from "interfaces/ITable.interface";
 import { dataPharmacy } from "resources/data";
 import {
   IAlmacen,
   IAlmacenStore,
+  IStorehouseRequest,
+  IStorehouseRequestUtility,
   IStorehouseUtility,
 } from "../../interfaces/IAlmacen.interface";
 
 export interface IRequestsState {
   requests: IAlmacen[] | null;
   activeRequest: IAlmacen | null;
+  activeStorehouseRequest: RequestWithUtilities | null;
   inventory: IAlmacenStore[] | null;
+  inventoryLessQty: IAlmacenStore[] | null;
+  activeStorehouseUtilities: IAlmacenStore[] | null;
   units: IStorehouseUtility[] | null;
   categories: IStorehouseUtility[] | null;
   presentations: IStorehouseUtility[] | null;
@@ -24,7 +38,10 @@ export interface IRequestsState {
 const initialState: IRequestsState = {
   requests: null,
   activeRequest: null,
+  activeStorehouseRequest: null,
   inventory: null,
+  inventoryLessQty: null,
+  activeStorehouseUtilities: null,
   units: null,
   categories: null,
   presentations: null,
@@ -44,6 +61,9 @@ export const requestsSlice = createSlice({
     setInventory: (state, action: PayloadAction<IAlmacenStore[]>) => {
       state.inventory = action.payload;
     },
+    setInventoryLessQty: (state, action: PayloadAction<IAlmacenStore[]>) => {
+      state.inventoryLessQty = action.payload;
+    },
     setUnits: (state, action: PayloadAction<IStorehouseUtility[]>) => {
       state.units = action.payload;
     },
@@ -52,6 +72,117 @@ export const requestsSlice = createSlice({
     },
     setPresentations: (state, action: PayloadAction<IStorehouseUtility[]>) => {
       state.presentations = action.payload;
+    },
+    setActiveStorehouseUtilities: (
+      state,
+      action: PayloadAction<IAlmacenStore>
+    ) => {
+      state.activeStorehouseUtilities = [
+        ...state.activeStorehouseUtilities,
+        action.payload,
+      ];
+    },
+    modifyActiveStorehouseUtilityQty: (
+      state,
+      action: PayloadAction<{ key: string; quantity: number }>
+    ) => {
+      const { key, quantity } = action.payload;
+      const utility = state.activeStorehouseUtilities?.find(
+        (utility) => utility.key === key
+      );
+      if (utility) {
+        utility.quantity = quantity;
+
+        if (utility.quantity <= 0 && state.activeStorehouseUtilities) {
+          state.activeStorehouseUtilities =
+            state.activeStorehouseUtilities.filter(
+              (medicine) => medicine.key !== key
+            );
+        }
+      }
+    },
+    removeActiveStorehouseUtility: (state, action: PayloadAction<string>) => {
+      state.activeStorehouseUtilities = state.activeStorehouseUtilities.filter(
+        (utility) => utility.key != action.payload
+      );
+    },
+    addActiveStorehouseUtility: (
+      state,
+      action: PayloadAction<IAlmacenStore>
+    ) => {
+      const medicineAlreadyInRecipe = state.activeStorehouseUtilities?.find(
+        (medicine) => medicine.key === action.payload.key
+      );
+      if (medicineAlreadyInRecipe) {
+        medicineAlreadyInRecipe.quantity += 1;
+      } else {
+        state.activeStorehouseUtilities
+          ? state.activeStorehouseUtilities.push({
+              key: action.payload.key,
+              genericName: action.payload.genericName,
+              quantity: 1,
+            })
+          : (state.activeStorehouseUtilities = [
+              {
+                key: action.payload.key,
+                genericName: action.payload.genericName,
+                quantity: 1,
+              },
+            ]);
+      }
+    },
+    clearActiveStorehouseUtilities: (state, action: PayloadAction) => {
+      state.activeStorehouseUtilities = null;
+    },
+    removeStorehouseRequest: (state, action: PayloadAction<string>) => {
+      state.requests = state.requests.filter((req) => req.id != action.payload);
+    },
+    setActiveStorehouseRequest: (
+      state,
+      action: PayloadAction<RequestWithUtilities>
+    ) => {
+      state.activeStorehouseRequest = action.payload;
+    },
+    modifyUtilitiesQuantityToSupply: (
+      state,
+      action: PayloadAction<{ key: string; quantity: number }>
+    ) => {
+      const { key, quantity } = action.payload;
+      const utility = state.activeStorehouseRequest.utilities.find(
+        (utility) => utility.key === key
+      );
+      if (utility) {
+        if (quantity >= 0 && quantity <= utility.pieces) {
+          utility.pieces_supplied = quantity;
+        }
+      } else {
+      }
+    },
+
+    addActiveStorehouseUtilities: (
+      state,
+      action: PayloadAction<IAlmacenStore>
+    ) => {
+      const medicineAlreadyInRecipe = state.activeStorehouseUtilities?.find(
+        (medicine) => medicine.key === action.payload.key
+      );
+      if (medicineAlreadyInRecipe) {
+        medicineAlreadyInRecipe.quantity += 1;
+      } else {
+        state.activeStorehouseUtilities
+          ? state.activeStorehouseUtilities.push({
+              key: action.payload.key,
+              genericName: action.payload.genericName,
+              quantity: 1,
+            })
+          : (state.activeStorehouseUtilities = [
+              {
+                key: action.payload.key,
+                genericName: action.payload.genericName,
+                quantity: 1,
+              },
+            ]);
+      }
     },
   },
   extraReducers: (builder) => {},
@@ -64,4 +195,12 @@ export const {
   setUnits,
   setCategories,
   setPresentations,
+  modifyActiveStorehouseUtilityQty,
+  removeActiveStorehouseUtility,
+  addActiveStorehouseUtility,
+  clearActiveStorehouseUtilities,
+  removeStorehouseRequest,
+  setActiveStorehouseRequest,
+  modifyUtilitiesQuantityToSupply,
+  setInventoryLessQty,
 } = requestsSlice.actions;

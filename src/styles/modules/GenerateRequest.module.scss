@@ -1,6 +1,5 @@
 @use "../colors";
 @use "../abstracts/variables";
-@use "./Components.module.scss";
 
 .container {
   display: flex;
@@ -8,9 +7,6 @@
   background-color: colors.$color-white;
 }
 
-.button_filled {
-  width: 40%;
-}
 .content {
   display: flex;
   padding: 0 4rem;
@@ -23,8 +19,6 @@
   flex-direction: column;
 }
 
-.content_col {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
+.sizedBox {
+  height: 25rem;
 }

@@ -4,10 +4,18 @@ import styles from "styles/modules/GenerateRecipe.module.scss";
 import { TopBar, TitleScreen, Sidebar, Table } from "components";
 import { ITable } from "interfaces/ITable.interface";
 import { useAppDispatch, useAppSelector } from "../../hooks/hooks";
-import { startGetRequestStorehouse } from "../../store/requests/thunks";
+import {
+  startDeletingRequest,
+  startDownloadingRequest,
+  startGetRequestStorehouse,
+  startGettingRequestById,
+} from "../../store/requests/thunks";
+import { useRouter } from "next/router";
+import { setActiveRequest } from "store/requests/requests.slice";
 const Almacen: NextPage = () => {
   const { requests } = useAppSelector((state) => state.storehouse);
   const dispatch = useAppDispatch();
+  const router = useRouter();
 
   useEffect(() => {
     dispatch(startGetRequestStorehouse());
@@ -19,14 +27,23 @@ const Almacen: NextPage = () => {
       { id: "created_at", label: "Fecha de solicitud" },
       { id: "name", label: "Nombre del solicitante" },
       { id: "status", label: "Estatus" },
+      { id: "actions", label: "Acciones" },
     ],
     rows: requests,
-    keyName: "folio",
-    percentages: [10, 35, 35, 20],
+    keyName: "id",
+    percentages: [5, 30, 30, 15, 20],
     textDisplay: ["center", "center", "center", "center", "center"],
-    elements: ["TEXT", "TEXT", "TEXT", "TEXT", "DETAILS"],
-    onClick: (id: number) => {
-      console.log(id);
+    elements: ["TEXT", "TEXT", "TEXT", "TEXT", "ACTIONS-P-E-D"],
+    onClick: (id: string) => {
+      dispatch(startDownloadingRequest(id));
+    },
+    onClick2: (id: string) => {
+      console.log({ id });
+      dispatch(setActiveRequest(requests.find((req) => req.id == id)));
+      router.push("/surtirSolicitudAlmacen");
+    },
+    onClick3: (id: string) => {
+      dispatch(startDeletingRequest(id));
     },
   };
 

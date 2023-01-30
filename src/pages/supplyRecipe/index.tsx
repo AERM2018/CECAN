@@ -15,6 +15,7 @@ import {
   modifyActiveMedicinesQuantity,
   modifyMedicinesQuantityToSupply,
 } from "store/recipes/recipesSlice";
+import { useRouter } from "next/router";
 const SupplyRecipe: NextPage = () => {
   const dispatch = useAppDispatch();
   const { activePrescription } = useAppSelector((state) => state.historial);
@@ -23,6 +24,8 @@ const SupplyRecipe: NextPage = () => {
   useEffect(() => {
     dispatch(startGettingRecipeById(activePrescription.id));
   }, []);
+
+  const router = useRouter();
 
   if (!activeRecipe) return <p>Loading</p>;
   const tableElements: ITable = {
@@ -84,6 +87,7 @@ const SupplyRecipe: NextPage = () => {
                   values.observations
                 )
               );
+              router.back();
             }}
           >
             {(formik) => (

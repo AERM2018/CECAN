@@ -32,7 +32,7 @@ const AddStorehouseInventory = () => {
           unit_id: "",
           presentation_id: "",
           category_id: "",
-          quantity_per_unit: 0,
+          quantity_per_unit: "",
           description: "",
         }}
         validationSchema={Yup.object({
