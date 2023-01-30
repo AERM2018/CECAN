@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { NextPage } from "next";
 import styles from "styles/modules/GenerateRecipe.module.scss";
 import { Sidebar, Table, TitleScreen, TopBar } from "components";
-import { ITable } from '../../interfaces/ITable.interface';
+import { ITable } from "../../interfaces/ITable.interface";
 import { useAppDispatch, useAppSelector } from "hooks/hooks";
 import { startGetStorehouseList } from "../../store/requests/thunks";
 import { startGetUsers } from "store/users/thunks";
@@ -30,7 +30,7 @@ const Users: NextPage = () => {
   };
 
   useEffect(() => {
-    dispatch(startGetStorehouseList());
+    dispatch(startGetUsers());
   }, []);
 
   return (
