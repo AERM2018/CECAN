@@ -1,4 +1,5 @@
 import React, { FC } from "react";
+import { useSession, signIn, signOut } from "next-auth/react";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { faCircleUser } from "@fortawesome/free-solid-svg-icons";
 import styles from "./Topbar.module.scss";
@@ -12,7 +13,9 @@ type Props = {
 export const Logout: FC<Props> = ({ username }) => {
   const dispatch = useAppDispatch();
   const router = useRouter();
+  useSession;
   const handleLogout = () => {
+    // signOut();
     localStorage.removeItem("token");
     dispatch(logout());
     router.push("/login");

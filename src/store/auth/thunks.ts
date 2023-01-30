@@ -8,6 +8,8 @@ import Router from "next/router";
 import { toast } from "react-hot-toast";
 import { Dispatch } from "redux";
 import { login } from "./authSlice";
+import { signIn } from "next-auth/react";
+import { gets } from "next-auth";
 import { useGetAccess } from "../../hooks/useGetAccess";
 
 export const startLogin = ({
@@ -17,40 +19,33 @@ export const startLogin = ({
   username: string;
   password: string;
 }) => {
-  const req = cecanApi.post<IAuthResponse>("/auth/login", {
-    username,
-    password,
-  });
-
   return async (dispatch: Dispatch) => {
-    toast.promise(req, {
-      loading: "Iniciando sesión...",
-      error: (error) => {
-        console.log(error);
-        return "Hubo un error al iniciar sesión";
-      },
-      success: ({ data: { data, ok } }: AxiosResponse<IAuthResponse>) => {
-        dispatch(
-          login({
-            token: data.token,
-            user: {
-              id: data.user.id,
-              name: data.user.name,
-              surname: data.user.surname,
-              full_name: data.user.full_name,
-              email: data.user.email,
-              role: data.user.role,
-            },
-          })
-        );
-
-        window.localStorage.setItem("token", data.token);
-
-        const items = useGetAccess(data.user.role.name);
-        Router.push(`/${items[0].path}`);
-        return `Bienvenido ${data.user.full_name}`;
-      },
+    const res = await signIn("credentials", {
+      redirect: false,
+      username,
+      password,
     });
+    console.log({ res });
+    if (res.ok) {
+      Router.push("/almacen");
+    }
+    // dispatch(
+    //   login({
+    //     token: data.token,
+    //     user: {
+    //       id: data.user.id,
+    //       name: data.user.name,
+    //       surname: data.user.surname,
+    //       full_name: data.user.full_name,
+    //       email: data.user.email,
+    //       role: data.user.role,
+    //     },
+    //   })
+    // );
+
+    // const items = useGetAccess(data.user.role.name);
+    // Router.push(`/${items[0].path}`);
+    // return `Bienvenido ${data.user.full_name}`;
   };
 };
 

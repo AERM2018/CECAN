@@ -184,6 +184,15 @@ export const requestsSlice = createSlice({
             ]);
       }
     },
+    findRequestByFolio: (state, action: PayloadAction<string>) => {
+      const request = state.requests.find(
+        (req) => req.folio.toString() == action.payload
+      );
+      state.requests = [];
+      if (request) {
+        state.requests = [request];
+      }
+    },
   },
   extraReducers: (builder) => {},
 });
@@ -203,4 +212,5 @@ export const {
   setActiveStorehouseRequest,
   modifyUtilitiesQuantityToSupply,
   setInventoryLessQty,
+  findRequestByFolio,
 } = requestsSlice.actions;

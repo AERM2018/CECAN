@@ -1,7 +1,7 @@
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { NextPage } from "next";
 import styles from "styles/modules/GenerateRecipe.module.scss";
-import { TopBar, TitleScreen, Sidebar, Table } from "components";
+import { TopBar, TitleScreen, Sidebar, Table, Searcher } from "components";
 import { ITable } from "interfaces/ITable.interface";
 import { useAppDispatch, useAppSelector } from "../../hooks/hooks";
 import {
@@ -11,15 +11,19 @@ import {
   startGettingRequestById,
 } from "../../store/requests/thunks";
 import { useRouter } from "next/router";
-import { setActiveRequest } from "store/requests/requests.slice";
+import {
+  findRequestByFolio,
+  setActiveRequest,
+} from "store/requests/requests.slice";
 const Almacen: NextPage = () => {
   const { requests } = useAppSelector((state) => state.storehouse);
   const dispatch = useAppDispatch();
   const router = useRouter();
+  const [requestFolio, setRequestFolio] = useState("");
 
   useEffect(() => {
-    dispatch(startGetRequestStorehouse());
-  }, []);
+    if (!requests || requestFolio == "") dispatch(startGetRequestStorehouse());
+  }, [requestFolio]);
 
   const tableElements: ITable = {
     headers: [
@@ -38,7 +42,6 @@ const Almacen: NextPage = () => {
       dispatch(startDownloadingRequest(id));
     },
     onClick2: (id: string) => {
-      console.log({ id });
       dispatch(setActiveRequest(requests.find((req) => req.id == id)));
       router.push("/surtirSolicitudAlmacen");
     },
@@ -47,13 +50,32 @@ const Almacen: NextPage = () => {
     },
   };
 
+  const onRequestFolioChange = (e) => {
+    setRequestFolio(e.target.value);
+  };
+
+  const onSubmitRequestFolio = (e) => {
+    e.preventDefault();
+    dispatch(findRequestByFolio(requestFolio));
+  };
+
   return (
     <div className={styles.container}>
       <TopBar />
       <TitleScreen title="Solicitudes" />
       <div className={styles.content}>
         <Sidebar />
-        <Table {...tableElements} />
+        <div className={styles.content_col}>
+          <div className={styles.content}>
+            <Searcher
+              value={requestFolio.toString()}
+              onChangeSearchValue={onRequestFolioChange}
+              onSubmitSearch={onSubmitRequestFolio}
+              placeholder="Busca por folio de solicitud"
+            />
+          </div>
+          <Table {...tableElements} />
+        </div>
       </div>
     </div>
   );

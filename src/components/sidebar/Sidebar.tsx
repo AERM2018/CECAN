@@ -1,15 +1,17 @@
 import React, { FC } from "react";
 import styles from "./Sidebar.module.scss";
 import { SidebarItem } from "./SidebarItem";
-import { useAppSelector } from "../../hooks/hooks";
+import { useAppDispatch, useAppSelector } from "../../hooks/hooks";
 
 import { useGetAccess } from "hooks/useGetAccess";
+import { useDispatch } from "react-redux";
+import { login } from "store/auth/authSlice";
 
 type Props = {};
 
 export const Sidebar: FC<Props> = () => {
   const { user } = useAppSelector((state) => state.auth);
-
+  const dispatch = useAppDispatch();
   const items = useGetAccess(user?.role.name);
 
   return (

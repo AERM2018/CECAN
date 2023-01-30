@@ -1,14 +1,18 @@
 import axios from "axios";
+import { getSession } from "next-auth/react";
 
 let token = "";
 if (typeof window !== "undefined") {
   token = window.localStorage.getItem("token");
 }
 
-export const getToken = () =>
-  typeof window !== "undefined" && window.localStorage.getItem("token")
-    ? window.localStorage.getItem("token")
-    : null;
+export const getToken = async () => {
+  // typeof window !== "undefined" && window.localStorage.getItem("token")
+  //   ? window.localStorage.getItem("token")
+  //   : null;
+  const session = await getSession();
+  console.log({ session });
+};
 
 export const getAuthorizationHeader = () => `Bearer ${getToken()}`;
 

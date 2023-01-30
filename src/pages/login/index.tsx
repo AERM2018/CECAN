@@ -5,6 +5,8 @@ import { TopBar } from "components";
 import { useAppDispatch } from "hooks/hooks";
 import { startLogin } from "../../store/auth/thunks";
 import { NextPage } from "next";
+import { useSession } from "next-auth/react";
+import { useRouter } from "next/router";
 
 const validationSchema = Yup.object({
   username: Yup.string().required("Requerido"),
@@ -13,7 +15,8 @@ const validationSchema = Yup.object({
 
 const Login: NextPage = () => {
   const dispatch = useAppDispatch();
-
+  const router = useRouter();
+  // const items = useGetAccess(data.user.role.name);
   const formik = useFormik({
     initialValues: {
       username: "admin@cecan.com",
@@ -27,8 +30,11 @@ const Login: NextPage = () => {
           password: values.password,
         })
       );
+      // router.push()
     },
   });
+
+  const { data, status } = useSession();
 
   return (
     <div className={styles.container}>
