@@ -4,13 +4,14 @@ import CredentialsProvider from "next-auth/providers/credentials";
 import cecanApi from "api/cecanApi";
 
 export default NextAuth({
+  session: {
+    strategy: "jwt",
+  },
   providers: [
     CredentialsProvider({
-      id: "credentials",
+      id: "login",
       async authorize(credentials) {
         try {
-          console.log({ credentials });
-          console.log("caca");
           const response = await fetch(
             `${process.env.API_BASE_URL}/auth/login`,
             {
@@ -25,19 +26,39 @@ export default NextAuth({
             }
           );
           const res = await response.json();
-          console.log({ data: res.data });
           return res.data;
         } catch (error) {
           console.log({ error });
-          return null;
+          return {};
         }
       },
     }),
   ],
+  callbacks: {
+    jwt: async ({ token, user }) => {
+      console.log({ token, user });
+      if (user) {
+        token = user;
+      }
+      return token;
+    },
+    session: async ({ session, token }) => {
+      // session callback is called whenever a session for that particular user is checked
+      // in above function we created token.user=user
+      session.user = token;
+      // you might return this in new version
+      return session;
+    },
+  },
   pages: {
     signIn: "/login",
     error: "/login",
   },
+  // jwt: {
+  //   encode: (token) => {
+  //     console.log({ token });
+  //   },
+  // },
   // callbacks: {
   //   async signIn({ user }) {
   //     if (user) return true;

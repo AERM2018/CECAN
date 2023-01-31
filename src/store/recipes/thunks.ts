@@ -1,4 +1,4 @@
-import cecanApi, { cecanApiPDF } from "api/cecanApi";
+import cecanApi, { cecanApiPDF, getToken } from "api/cecanApi";
 import { Dispatch } from "redux";
 import {
   IPrescription,
@@ -27,7 +27,7 @@ export const startGenerateRecipe =
     const res = await fetch(`${process.env.API_BASE_URL}/prescriptions`, {
       method: "POST",
       headers: {
-        Authorization: `Bearer ${localStorage.getItem("token")}`,
+        Authorization: `Bearer ${await getToken()}`,
         "Content-Type": "application/json",
       },
       body: JSON.stringify({
@@ -53,7 +53,7 @@ export const startDownloadRecipe =
       {
         method: "GET",
         headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          Authorization: `Bearer ${await getToken()}`,
           "Content-Type": "application/json",
         },
       }

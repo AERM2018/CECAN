@@ -1,4 +1,4 @@
-import cecanApi from "api/cecanApi";
+import cecanApi, { getToken } from "api/cecanApi";
 import {
   IRequestStoreHouseDataResponse,
   IRequestStoreHouseResponse,
@@ -266,7 +266,7 @@ export const startDownloadingRequest =
       {
         method: "GET",
         headers: {
-          Authorization: `Bearer ${localStorage.getItem("token")}`,
+          Authorization: `Bearer ${await getToken()}`,
           "Content-Type": "application/json",
         },
       }

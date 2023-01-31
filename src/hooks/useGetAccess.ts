@@ -47,7 +47,7 @@ const items = [
     icon: faClipboardCheck,
     text: "Historial de recetas",
     path: "historial",
-    role: ["Admin", "Medico"],
+    role: ["Admin", "Medico", "Farmacia"],
   },
   {
     icon: faFileCirclePlus,

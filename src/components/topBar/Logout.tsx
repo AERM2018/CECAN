@@ -15,7 +15,9 @@ export const Logout: FC<Props> = ({ username }) => {
   const router = useRouter();
   useSession;
   const handleLogout = () => {
-    // signOut();
+    signOut({
+      callbackUrl: `${process.env.NEXTAUTH_URL}/login`,
+    });
     localStorage.removeItem("token");
     dispatch(logout());
     router.push("/login");

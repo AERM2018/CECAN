@@ -8,8 +8,7 @@ import Router from "next/router";
 import { toast } from "react-hot-toast";
 import { Dispatch } from "redux";
 import { login } from "./authSlice";
-import { signIn } from "next-auth/react";
-import { gets } from "next-auth";
+import { signIn, getSession } from "next-auth/react";
 import { useGetAccess } from "../../hooks/useGetAccess";
 
 export const startLogin = ({
@@ -20,37 +19,38 @@ export const startLogin = ({
   password: string;
 }) => {
   return async (dispatch: Dispatch) => {
-    const res = await signIn("credentials", {
+    const res = await signIn("login", {
       redirect: false,
       username,
       password,
     });
     console.log({ res });
     if (res.ok) {
-      Router.push("/almacen");
+      toast.promise(getSession(), {
+        loading: "Iniciando sesión...",
+        success: (session) => {
+          dispatch(
+            login({
+              token: session.user.token,
+              user: session.user.user,
+            })
+          );
+          // eslint-disable-next-line react-hooks/rules-of-hooks
+          const items = useGetAccess(session.user.user.role.name);
+          Router.push(`/${items[0].path}`);
+          return `Bienvenido ${session.user.user.full_name}`;
+        },
+        error: () => {
+          return "Hubo un error al iniciar sesión, intentelo más tarde";
+        },
+      });
+      const session = await getSession();
     }
-    // dispatch(
-    //   login({
-    //     token: data.token,
-    //     user: {
-    //       id: data.user.id,
-    //       name: data.user.name,
-    //       surname: data.user.surname,
-    //       full_name: data.user.full_name,
-    //       email: data.user.email,
-    //       role: data.user.role,
-    //     },
-    //   })
-    // );
-
-    // const items = useGetAccess(data.user.role.name);
-    // Router.push(`/${items[0].path}`);
-    // return `Bienvenido ${data.user.full_name}`;
   };
 };
 
 export const renewToken = () => {
-  const req = cecanApi.get<IRenewResponse>("/auth/renew");
+  const req = cecanApi.post<IRenewResponse>("/auth/renew");
 
   return async (dispatch: Dispatch) => {
     toast.promise(req, {

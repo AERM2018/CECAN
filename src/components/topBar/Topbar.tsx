@@ -1,10 +1,15 @@
 import styles from "./Topbar.module.scss";
 import { Logout } from "./Logout";
-import { useAppSelector } from "../../hooks/hooks";
+import { useAppDispatch, useAppSelector } from "../../hooks/hooks";
 import { authSlice } from "../../store/auth/authSlice";
+import { useSession } from "next-auth/react";
+import { renewToken } from "store/auth/thunks";
+import { useEffect } from "react";
 
 export const TopBar = () => {
   const { user } = useAppSelector((state) => state.auth);
+  const { data, status } = useSession();
+
   return (
     <div className={styles.topBar}>
       <div className={styles.logos}>
@@ -16,7 +21,11 @@ export const TopBar = () => {
         1
       </div>
 
-      <Logout username={user ? user.full_name : "Usuario"} />
+      <Logout
+        username={
+          status != "authenticated" ? "Usuario" : data.user.user.full_name
+        }
+      />
     </div>
   );
 };

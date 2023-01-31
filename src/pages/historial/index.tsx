@@ -17,6 +17,7 @@ import {
   startGetHistorialPrescriptions,
 } from "store/recipes/thunks";
 import { Modal } from "@mui/material";
+import { useSession } from "next-auth/react";
 
 const Historial: NextPage = () => {
   const { prescriptions, activePrescription } = useAppSelector(
@@ -28,12 +29,21 @@ const Historial: NextPage = () => {
   const [folio, setfolio] = useState("");
 
   const router = useRouter();
+  const { data, status } = useSession();
 
   useEffect(() => {
     if (!prescriptions || folio == "") {
-      dispatch(startGetHistorialPrescriptions(user.id));
+      if (status == "authenticated") {
+        dispatch(
+          startGetHistorialPrescriptions(
+            !["Farmacia", "Admin"].includes(data.user.user.role.name)
+              ? data.user.user.id
+              : ""
+          )
+        );
+      }
     }
-  }, [dispatch, folio]);
+  }, [dispatch, folio, status]);
 
   const tableElements: ITable = {
     headers: [
