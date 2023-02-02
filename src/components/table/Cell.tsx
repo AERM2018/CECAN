@@ -4,6 +4,7 @@ import styles from "./Table.module.scss";
 
 type CellProps = {
   percentage: number;
+  percentageUnits?: string;
   textDisplay?: CanvasTextAlign;
   content: string;
   type: string;
@@ -15,6 +16,7 @@ type CellProps = {
 
 export const Cell: FC<CellProps> = ({
   percentage,
+  percentageUnits,
   textDisplay,
   content,
   type,
@@ -35,7 +37,8 @@ export const Cell: FC<CellProps> = ({
     <div
       className={styles.cell}
       style={{
-        width: `${percentage}%`,
+        maxWidth: `${percentage}${percentageUnits ? percentageUnits : "%"}`,
+        minWidth: `${percentage}${percentageUnits ? percentageUnits : "%"}`,
         textAlign: textDisplay ? textDisplay : "start",
       }}
     >

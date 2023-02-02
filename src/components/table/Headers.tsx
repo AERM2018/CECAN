@@ -1,13 +1,20 @@
 import { FC } from "react";
+import { string } from "yup";
 import styles from "./Table.module.scss";
 
 type Props = {
   headers: any[];
   percentages: number[];
   textDisplay?: CanvasTextAlign[];
+  percentageUnits?: string;
 };
 
-export const Headers: FC<Props> = ({ headers, percentages, textDisplay }) => {
+export const Headers: FC<Props> = ({
+  headers,
+  percentages,
+  textDisplay,
+  percentageUnits,
+}) => {
   return (
     <div className={styles.headers}>
       {headers.map((header, index) => {
@@ -16,7 +23,12 @@ export const Headers: FC<Props> = ({ headers, percentages, textDisplay }) => {
             key={header.id}
             className={styles.headerItem}
             style={{
-              width: `${percentages[index]}%`,
+              maxWidth: `${percentages[index]}${
+                percentageUnits ? percentageUnits : "%"
+              }`,
+              minWidth: `${percentages[index]}${
+                percentageUnits ? percentageUnits : "%"
+              }`,
               textAlign: textDisplay ? textDisplay[index] : "start",
             }}
           >

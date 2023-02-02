@@ -9,6 +9,7 @@ export const Body: FC<ITable> = ({
   headers,
   rows,
   percentages,
+  percentageUnits,
   textDisplay,
   elements,
   keyName = "key",
@@ -41,6 +42,7 @@ export const Body: FC<ITable> = ({
                 textDisplay={textDisplay ? textDisplay[index] : "start"}
                 content={content}
                 percentage={percentages[index]}
+                percentageUnits={percentageUnits}
                 type={elements[index]}
                 onClick={onClick}
                 onClick2={onClick2}

@@ -34,6 +34,7 @@ export interface ITable extends IOnClick {
     | IStorehouseRequestUtility[]
     | null;
   percentages: number[];
+  percentageUnits?: string;
   keyName?: "id" | "folio" | "key" | "medicine_key";
   textDisplay?: CanvasTextAlign[];
   elements: string[];

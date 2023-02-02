@@ -1,4 +1,4 @@
-import { Sidebar, Table, TitleScreen, TopBar } from "components";
+import { Searcher, Sidebar, Table, TitleScreen, TopBar } from "components";
 import { useAppDispatch, useAppSelector } from "hooks/hooks";
 import React, { useEffect } from "react";
 import { ITable } from "../../interfaces/ITable.interface";
@@ -19,13 +19,26 @@ const FixedAsset = () => {
       { id: "description", label: "Descripción" },
       { id: "model", label: "Modelo" },
       { id: "brand", label: "Marca" },
+      { id: "department_name", label: "Departamento" },
+      { id: "director_user_name", label: "Director" },
+      { id: "administrator_user_name", label: "Subdirector" },
       { id: "created_at", label: "Fecha de adquisición" },
     ],
     rows: fixedAssets,
     keyName: "folio",
-    percentages: [30, 20, 10, 15, 15],
-    textDisplay: ["center", "center", "center", "center", "center"],
-    elements: ["TEXT", "TEXT", "TEXT", "TEXT", "TEXT"],
+    percentages: [10, 25, 10, 10, 20, 30, 30, 10],
+    percentageUnits: "vw",
+    textDisplay: [
+      "center",
+      "center",
+      "center",
+      "center",
+      "center",
+      "center",
+      "center",
+      "center",
+    ],
+    elements: ["TEXT", "TEXT", "TEXT", "TEXT", "TEXT", "TEXT", "TEXT", "TEXT"],
     onClick: (id: number) => {
       console.log(id);
     },
@@ -35,9 +48,17 @@ const FixedAsset = () => {
     <div className={styles.container}>
       <TopBar />
       <TitleScreen title="Activo fijo" />
-      <div className={styles.content}>
+      <div className={`${styles.content}`}>
         <Sidebar />
-        <Table {...tableElements} />
+        <div className={styles.content_col}>
+          <div className={styles.content}>
+            {/* <Searcher /> */}
+            <button className={styles.button_filled}>
+              Cargar datos desde archivo csv
+            </button>
+          </div>
+          <Table {...tableElements} />
+        </div>
       </div>
     </div>
   );

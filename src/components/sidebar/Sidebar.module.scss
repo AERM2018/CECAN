@@ -2,61 +2,64 @@
 @use "../../styles/colors";
 
 .container {
-    display: flex;
-    flex-direction: column;
-    width: variables.$sidebar-width;
-    height: 100%;
-    background-color: colors.$color-white;
-    gap: 2rem;
-    overflow: auto;
-    max-height: 40rem;
+  display: flex;
+  flex-direction: column;
+  width: variables.$sidebar-width;
+  min-width: variables.$sidebar-width;
+  //   max-height: 85vh;
+  //   height: 100%;
+  background-color: colors.$color-white;
+  gap: 1.5rem;
+  overflow: auto;
+  height: 100%;
+  max-height: 50rem;
 
-    &::-webkit-scrollbar {
-        width: 0.5rem;
-    }
+  &::-webkit-scrollbar {
+    width: 0.5rem;
+  }
 }
 
 .item {
+  display: flex;
+  align-items: center;
+  padding: 1rem 0;
+  position: relative;
+  .icon {
+    width: 20%;
     display: flex;
-    align-items: center;
-    padding: 1rem 0;
-    position: relative;
-    .icon {
-        width: 20%;
-        display: flex;
-    }
+  }
 }
 
 .icon,
 .item {
-    color: colors.$secondary;
-    font-size: variables.$h2-font-size;
-    transition: all 0.3s ease-in-out;
-    cursor: pointer;
+  color: colors.$secondary;
+  font-size: variables.$h3-font-size;
+  transition: all 0.3s ease-in-out;
+  cursor: pointer;
 
-    &:hover {
-        color: colors.$primary;
-        svg {
-            color: colors.$primary;
-        }
+  &:hover {
+    color: colors.$primary;
+    svg {
+      color: colors.$primary;
     }
+  }
 }
 
 .icon {
-    font-size: 3.5rem;
+  font-size: 3rem;
 }
 
 .active {
+  color: colors.$primary;
+  svg {
     color: colors.$primary;
-    svg {
-        color: colors.$primary;
-    }
-    &::after {
-        content: "";
-        position: absolute;
-        right: 105%;
-        width: 0.5rem;
-        height: 75%;
-        background-color: colors.$primary;
-    }
+  }
+  &::after {
+    content: "";
+    position: absolute;
+    right: 105%;
+    width: 0.5rem;
+    height: 75%;
+    background-color: colors.$primary;
+  }
 }

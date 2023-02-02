@@ -11,6 +11,7 @@ export const Table: FC<ITable> = (props) => {
         headers={props.headers}
         percentages={props.percentages}
         textDisplay={props.textDisplay}
+        percentageUnits={props.percentageUnits}
       />
       <Body {...props} />
     </div>

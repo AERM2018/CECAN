@@ -2,49 +2,60 @@
 @use "../../styles/abstracts/variables";
 
 .container {
-    display: flex;
-    flex-direction: column;
-    flex: 1;
-    overflow: auto;
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  max-width: 100%;
+  max-height: 50rem;
+  //   overflow-x: scroll;
+  //   flex: 1;
+  overflow-y: auto;
+  overflow-x: auto;
+  //   overflow: scroll;
 }
 
 .headers {
-    display: flex;
-    justify-content: space-between;
-    padding-bottom: 2rem;
-    border-bottom: solid 1px colors.$color-gray;
-    font-weight: bold;
-    min-width: 90rem;
-}
+  display: flex;
+  //   justify-content: space-between;
+  font-weight: bold;
+  min-width: 90rem;
+  //   width: 3000px;
 
+  flex: 1;
+}
+.headerItem {
+  border-bottom: solid 1px colors.$color-gray;
+  max-height: 5rem;
+  min-height: 3rem;
+}
 .headerItem,
 .cell {
-    font-size: variables.$h3-font-size;
-    height: 3rem;
-    p {
-        text-overflow: ellipsis;
-        overflow: hidden;
-        white-space: nowrap;
-    }
+  font-size: variables.$h3-font-size;
+  //   height: 3rem;
+  p {
+    text-overflow: ellipsis;
+    overflow: hidden;
+    white-space: nowrap;
+  }
 }
 
 .body {
-    min-width: 90rem;
-
-    display: flex;
-    flex-direction: column;
-    flex: 1;
-    padding-top: 2rem;
+  min-width: 90rem;
+  //   overflow: visible;
+  display: flex;
+  flex-direction: column;
+  flex: 1;
+  padding-top: 2rem;
 }
 
 .row {
-    display: flex;
-    justify-content: space-between;
-    padding-bottom: 2rem;
+  display: flex;
+  //   justify-content: space-between;
+  padding-bottom: 0.8rem;
 }
 
 .cell {
-    height: 3rem;
-    color: colors.$color-gray;
-    font-weight: 300;
+  height: 3rem;
+  color: colors.$color-gray;
+  font-weight: 300;
 }

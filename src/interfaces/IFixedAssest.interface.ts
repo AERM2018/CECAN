@@ -9,6 +9,9 @@ export interface IFixedAsset {
   description: string;
   model: string;
   brand: string;
+  department_name: string;
+  director_user_name: string;
+  administrator_user_name: string;
   created_at: string;
   updated_at: string;
 }
