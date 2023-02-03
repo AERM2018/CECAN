@@ -1,17 +1,33 @@
 import { Searcher, Sidebar, Table, TitleScreen, TopBar } from "components";
 import { useAppDispatch, useAppSelector } from "hooks/hooks";
-import React, { useEffect } from "react";
+import React, { useEffect, useState } from "react";
 import { ITable } from "../../interfaces/ITable.interface";
 import styles from "styles/modules/GenerateRecipe.module.scss";
 import { startGetFixedAssests } from "store/fixedAsset/thunks";
+import { createTheme, Pagination, ThemeProvider } from "@mui/material";
 
 const FixedAsset = () => {
-  const { fixedAssets } = useAppSelector((state) => state.fixedAsset);
+  const { pages, fixedAssets } = useAppSelector((state) => state.fixedAsset);
   const dispatch = useAppDispatch();
+  const [currentPage, setCurrentPage] = useState(1);
+  const [query, setQuery] = useState("");
 
   useEffect(() => {
-    dispatch(startGetFixedAssests());
-  }, []);
+    dispatch(startGetFixedAssests(query, currentPage));
+  }, [currentPage, query]);
+
+  const onChangePage = (e, page: number) => {
+    setCurrentPage(page);
+  };
+
+  const onChangeQuery = (e) => {
+    setQuery(e.target.value);
+  };
+
+  const onSubmitQuery = (e) => {
+    e.preventDefault();
+    dispatch(startGetFixedAssests(query, 1));
+  };
 
   const tableElements: ITable = {
     headers: [
@@ -21,12 +37,12 @@ const FixedAsset = () => {
       { id: "brand", label: "Marca" },
       { id: "department_name", label: "Departamento" },
       { id: "director_user_name", label: "Director" },
-      { id: "administrator_user_name", label: "Subdirector" },
+      { id: "administrator_user_name", label: "Administrador" },
       { id: "created_at", label: "Fecha de adquisición" },
     ],
     rows: fixedAssets,
     keyName: "folio",
-    percentages: [10, 25, 10, 10, 20, 30, 30, 10],
+    percentages: [10, 35, 10, 10, 30, 30, 30, 10],
     percentageUnits: "vw",
     textDisplay: [
       "center",
@@ -44,23 +60,54 @@ const FixedAsset = () => {
     },
   };
 
+  const theme = createTheme({
+    palette: {
+      primary: { main: "#214d99" },
+    },
+  });
   return (
-    <div className={styles.container}>
-      <TopBar />
-      <TitleScreen title="Activo fijo" />
-      <div className={`${styles.content}`}>
-        <Sidebar />
-        <div className={styles.content_col}>
-          <div className={styles.content}>
-            {/* <Searcher /> */}
-            <button className={styles.button_filled}>
-              Cargar datos desde archivo csv
-            </button>
+    <ThemeProvider theme={theme}>
+      <div className={styles.container}>
+        <TopBar />
+        <TitleScreen title="Activo fijo" />
+        <div className={`${styles.content}`}>
+          <Sidebar />
+          <div className={styles.content_col}>
+            <div className={styles.content}>
+              <Searcher
+                value={query}
+                onChangeSearchValue={onChangeQuery}
+                onSubmitSearch={onSubmitQuery}
+                placeholder="Busca por algún campo de la tabla"
+              />
+              <button
+                className={styles.button_filled}
+                onClick={() => {
+                  document.getElementById("file").click();
+                }}
+              >
+                aaaaaaaaaa
+              </button>
+              <input
+                className={styles.custom_file_input}
+                id="file"
+                type="file"
+              />
+            </div>
+            <Table {...tableElements} />
+            <div className={styles.pagination}>
+              <Pagination
+                count={pages}
+                color="primary"
+                size="large"
+                shape="rounded"
+                onChange={onChangePage}
+              />
+            </div>
           </div>
-          <Table {...tableElements} />
         </div>
       </div>
-    </div>
+    </ThemeProvider>
   );
 };
 

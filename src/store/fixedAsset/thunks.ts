@@ -12,6 +12,7 @@ import {
   setDepartments,
   setFixedAssets,
   setFixedAssetsRequests,
+  setPages,
 } from "./fixedAssetSlice";
 import {
   IFixedAsset,
@@ -62,19 +63,33 @@ export const startSetDepartments =
     // dispatch(setDepartments(response.data));
   };
 
-export const startGetFixedAssests = () => async (dispatch: Dispatch) => {
-  try {
-    const { data } = await cecanApi.get<IFixedAssetResponse>("/fixed_assets");
-    console.log(data.data.fixed_assets);
+export const startGetFixedAssests =
+  (filterQuery?: string, page?: number) => async (dispatch: Dispatch) => {
+    const queries = {
+      brand: filterQuery,
+      model: filterQuery,
+      type: filterQuery,
+      physic_state: filterQuery,
+      department_name: filterQuery,
+      description: filterQuery,
+    };
+    const queriesString = Object.entries(queries)
+      .map((entry) => `${entry[0]}=${entry[1]}`)
+      .join("&");
+    try {
+      const { data } = await cecanApi.get<IFixedAssetResponse>(
+        `/fixed_assets?page=${page}&${queriesString}`
+      );
+      console.log(data.data.fixed_assets);
 
-    const dataFixedAssets = data.data.fixed_assets.map((fixedAsset) => ({
-      ...fixedAsset,
-      created_at: moment(fixedAsset.created_at).format("DD/MM/YYYY"),
-    }));
-
-    dispatch(setFixedAssets(dataFixedAssets));
-  } catch (error) {}
-};
+      const dataFixedAssets = data.data.fixed_assets.map((fixedAsset) => ({
+        ...fixedAsset,
+        created_at: moment(fixedAsset.created_at).format("DD/MM/YYYY"),
+      }));
+      dispatch(setPages(data.pages));
+      dispatch(setFixedAssets(dataFixedAssets));
+    } catch (error) {}
+  };
 
 export const startAddingFixedAsset =
   (dataFixedAssets: any) => async (dispatch: Dispatch) => {

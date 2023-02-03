@@ -9,6 +9,8 @@ import Router from "next/router";
 import { Toaster } from "react-hot-toast";
 import { useAppDispatch } from "hooks/hooks";
 import { startLogin, renewToken } from "store/auth/thunks";
+import { ThemeProvider } from "@emotion/react";
+import { createTheme } from "@mui/system";
 
 function MyApp({ Component, pageProps: { session, ...pageProps } }: AppProps) {
   useEffect(() => {
@@ -28,18 +30,28 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }: AppProps) {
     // console.log((!token || token != "") && Router.pathname !== "/login");
   }, []);
 
+  const theme = createTheme({
+    palette: {
+      primary: { main: "#214d99" },
+    },
+  });
+
   return (
     <Provider store={store}>
       <SessionProvider session={session}>
-        <Toaster
-          toastOptions={{
-            style: {
-              fontSize: "2.2rem",
-              height: "100%",
-            },
-          }}
-        />
-        <Component {...pageProps} />
+        <>
+          <Toaster
+            toastOptions={{
+              style: {
+                fontSize: "2.2rem",
+                height: "100%",
+              },
+            }}
+          />
+          <ThemeProvider theme={theme}>
+            <Component {...pageProps} />
+          </ThemeProvider>
+        </>
       </SessionProvider>
     </Provider>
   );

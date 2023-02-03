@@ -36,3 +36,50 @@
   height: 100%;
   max-height: 100%;
 }
+
+.pagination {
+  display: flex;
+  justify-content: end;
+  margin-top: 3rem;
+}
+
+// .custom_file_input::-webkit-file-upload-button {
+//   visibility: hidden;
+// }
+// .custom_file_input::before {
+//   content: "Cargar activo fijo desde archivo";
+//   display: inline-block;
+
+//   background-color: colors.$primary;
+//   padding: 5px 8px;
+//   outline: none;
+//   white-space: nowrap;
+//   -webkit-user-select: none;
+//   cursor: pointer;
+
+//   width: 20%;
+//   height: 4rem;
+//   border-radius: 1rem;
+//   border: none;
+//   color: colors.$color-white;
+//   background-color: colors.$primary;
+//   font-size: variables.$h3-font-size;
+//   font-family: "Roboto", sans-serif;
+//   margin-top: 1rem;
+//   margin-left: 3rem;
+// }
+
+// .custom_file_input:hover::before {
+//   border-color: black;
+// }
+// .custom_file_input:active::before {
+//   background: -webkit-linear-gradient(top, #e3e3e3, #f9f9f9);
+// }
+
+.custom_file_input {
+  width: 0;
+  height: 0;
+}
+// . {
+//   color: colors.$primary;
+// }

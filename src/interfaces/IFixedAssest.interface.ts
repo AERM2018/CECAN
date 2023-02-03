@@ -2,6 +2,7 @@ export interface IFixedAssetResponse {
   data: {
     fixed_assets: IFixedAsset[];
   };
+  pages?: number;
 }
 
 export interface IFixedAsset {

@@ -12,6 +12,7 @@ interface IFixedAssetState {
   loading: boolean;
   departments: Department[] | null;
   activeRequest: FixedAssetsRequestID | null;
+  pages: number;
 }
 
 const initialState: IFixedAssetState = {
@@ -20,6 +21,7 @@ const initialState: IFixedAssetState = {
   departments: null,
   requests: null,
   activeRequest: null,
+  pages: 1,
 };
 
 export const fixedAssetSlice = createSlice({
@@ -57,6 +59,9 @@ export const fixedAssetSlice = createSlice({
     clearActiveFixedRequest: (state) => {
       state.activeRequest = null;
     },
+    setPages: (state, action: PayloadAction<number>) => {
+      state.pages = action.payload;
+    },
   },
 
   extraReducers: (builder) => {},
@@ -70,4 +75,5 @@ export const {
   deleteRequestFixedAsset,
   setActiveFixedRequest,
   clearActiveFixedRequest,
+  setPages,
 } = fixedAssetSlice.actions;
