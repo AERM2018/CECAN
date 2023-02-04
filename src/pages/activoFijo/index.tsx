@@ -3,7 +3,10 @@ import { useAppDispatch, useAppSelector } from "hooks/hooks";
 import React, { useEffect, useState } from "react";
 import { ITable } from "../../interfaces/ITable.interface";
 import styles from "styles/modules/GenerateRecipe.module.scss";
-import { startGetFixedAssests } from "store/fixedAsset/thunks";
+import {
+  startGetFixedAssests,
+  startUploadingFixedAssetFile,
+} from "store/fixedAsset/thunks";
 import { createTheme, Pagination, ThemeProvider } from "@mui/material";
 
 const FixedAsset = () => {
@@ -29,6 +32,23 @@ const FixedAsset = () => {
     dispatch(startGetFixedAssests(query, 1));
   };
 
+  const onSumbitFile = () => {
+    const input = document.getElementById("file") as HTMLInputElement;
+    input.addEventListener(
+      "change",
+      (e: any) => {
+        e.preventDefault();
+        e.stopPropagation();
+        dispatch(
+          startUploadingFixedAssetFile(e.target.files, () =>
+            dispatch(startGetFixedAssests("", 1))
+          )
+        );
+      },
+      false
+    );
+    input.click();
+  };
   const tableElements: ITable = {
     headers: [
       { id: "key", label: "Etiqueta o clave" },
@@ -80,13 +100,8 @@ const FixedAsset = () => {
                 onSubmitSearch={onSubmitQuery}
                 placeholder="Busca por algún campo de la tabla"
               />
-              <button
-                className={styles.button_filled}
-                onClick={() => {
-                  document.getElementById("file").click();
-                }}
-              >
-                aaaaaaaaaa
+              <button className={styles.button_filled} onClick={onSumbitFile}>
+                Importar datos desde csv
               </button>
               <input
                 className={styles.custom_file_input}

@@ -184,3 +184,31 @@ export const startPrintingFixedReport =
 
     download(blob, "Reporte Activo Fijo.pdf", "application/pdf");
   };
+
+export const startUploadingFixedAssetFile =
+  (files: FileList, cb: Function) => async (dispatch: Dispatch) => {
+    const formData = new FormData();
+    formData.append("excel_file", files[0]);
+    const uploadFilePromise = fetch(
+      `${process.env.API_BASE_URL}/fixed_assets/file`,
+      {
+        body: formData,
+        method: "POST",
+        headers: {
+          Authorization: `Bearer ${await getToken()}`,
+        },
+      }
+    );
+    const response = await toast.promise(uploadFilePromise, {
+      loading: "Cargando datos...",
+      success: (res) => {
+        if (res.status != 204) {
+          return "Ocurrió un error al importar los datos, hable con el administrador.";
+        }
+        return "Datos importados correctamente.";
+      },
+      error: (error) =>
+        `Ocurrió un error al importar los datos, hable con el administrador.\n${error}`,
+    });
+    if (response.status == 204) cb();
+  };
