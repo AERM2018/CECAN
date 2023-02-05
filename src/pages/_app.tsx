@@ -30,12 +30,6 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }: AppProps) {
     // console.log((!token || token != "") && Router.pathname !== "/login");
   }, []);
 
-  const theme = createTheme({
-    palette: {
-      primary: { main: "#214d99" },
-    },
-  });
-
   return (
     <Provider store={store}>
       <SessionProvider session={session}>
@@ -48,9 +42,7 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }: AppProps) {
               },
             }}
           />
-          <ThemeProvider theme={theme}>
-            <Component {...pageProps} />
-          </ThemeProvider>
+          <Component {...pageProps} />
         </>
       </SessionProvider>
     </Provider>
