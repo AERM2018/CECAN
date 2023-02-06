@@ -22,22 +22,22 @@ const ListAlmacen: NextPage = () => {
           { id: "lot_number", label: "No. de lote" },
           { id: "catalog_number", label: "No. de catálogo" },
           { id: "genericName", label: "Nombre Generico" },
-          { id: "presentation", label: "Presentación" },
+          { id: "storehouse_utility.final_presentation", label: "Presentación" },
           { id: "expires_at", label: "Expira el" },
-          { id: "quantity", label: "Cantidad" },
+          { id: "quantity_presentation_left", label: "Cantidad" },
         ]
       : [
           { id: "key", label: "Clave" },
           { id: "genericName", label: "Nombre Generico" },
-          { id: "presentation", label: "Presentación" },
+          { id: "storehouse_utility.final_presentation", label: "Presentación" },
           {
-            id: "total_quantity_presentation_left",
+            id: "quantity_presentation_left",
             label: "Cant. total restante",
           },
         ],
-    rows: !showUtilitiesLessQty ? inventory : inventoryLessQty,
+    rows: inventory,
     percentages: !showUtilitiesLessQty
-      ? [15, 15, 15, 30, 20, 10, 10]
+      ? [15, 15, 30, 40, 20, 13, 13]
       : [15, 40, 30, 15],
     textDisplay: !showUtilitiesLessQty
       ? ["center", "center", "center", "start", "start", "center", "center"]
@@ -47,9 +47,7 @@ const ListAlmacen: NextPage = () => {
   };
 
   useEffect(() => {
-    if (!inventory || utilityKey == "") {
-      dispatch(startGetStorehouseList({ showLessQty: showUtilitiesLessQty }));
-    }
+      dispatch(startGetStorehouseList({ showLessQty: showUtilitiesLessQty, concidence:utilityKey }));
   }, [utilityKey, showUtilitiesLessQty]);
 
   const onUtilikyKeyChange = (e) => {
@@ -80,7 +78,7 @@ const ListAlmacen: NextPage = () => {
   return (
     <div className={styles.container}>
       <TopBar />
-      <TitleScreen title="Lista Almacén" />
+      <TitleScreen title="Inventario de Almacén" />
       <div className={styles.content}>
         <Sidebar />
         <div className={styles.content_col}>

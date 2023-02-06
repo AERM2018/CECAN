@@ -54,59 +54,79 @@ export const startGetRequestStorehouse = () => async (dispatch: Dispatch) => {
 
 export const startGetStorehouseList =
   ({
-    searchStocks = true,
+    concidence = "",
     showLessQty = false,
   }: {
-    searchStocks?: boolean;
+    concidence?: string;
     showLessQty?: boolean;
   }) =>
   async (dispatch: Dispatch) => {
+    let queryParams = "?";
+    if(showLessQty) queryParams += "show_less_qty=true&"
+    if(concidence != ""){
+      const filters = {
+        utility_name: concidence,
+        utility_key: concidence,
+      }
+      queryParams += `${Object.keys(filters).map((key) => `${key}=${filters[key]}`).join("&")}`
+    }
     const {
       data: { data, ok },
-    } = await cecanApi.get<IAlmacenListResponse>("/storehouse_inventory");
+    } = await cecanApi.get<IAlmacenListResponse>(`/storehouse_inventory${queryParams}`);
     moment.locale("es");
     if (ok) {
-      let inventorySummarized = data.inventory
-        .map((item) => {
-          if (item.stocks.length == 0 || !searchStocks || showLessQty) {
-            return [
-              {
-                quantity: 0,
-                lot_number: "No definido",
-                catalog_number: "No definido",
-                key: item.storehouse_utility.key,
-                genericName: item.storehouse_utility.generic_name,
-                presentation: `${item.storehouse_utility.presentation.name} de ${item.storehouse_utility.quantity_per_unit} ${item.storehouse_utility.unit.name}`,
-                expires_at: "N/A",
-                total_quantity_presentation_left:
-                  item.total_quantity_presentation_left,
-              },
-            ];
-          }
-          return item.stocks.map((stock) => {
+      // let inventorySummarized = data.inventory
+      //   .map((item) => {
+      //     if (item.stocks.length == 0 || !searchStocks || showLessQty) {
+      //       return [
+      //         {
+      //           quantity: 0,
+      //           lot_number: "No definido",
+      //           catalog_number: "No definido",
+      //           key: item.storehouse_utility.key,
+      //           genericName: item.storehouse_utility.generic_name,
+      //           presentation: `${item.storehouse_utility.presentation.name} de ${item.storehouse_utility.quantity_per_unit} ${item.storehouse_utility.unit.name}`,
+      //           expires_at: "N/A",
+      //           total_quantity_presentation_left:
+      //             item.total_quantity_presentation_left,
+      //         },
+      //       ];
+      //     }
+      //     return item.stocks.map((stock) => {
+      //       return {
+      //         quantity:
+      //           stock.quantity_presentation - stock.quantity_presentation_used,
+      //         lot_number: stock.lot_number,
+      //         catalog_number: stock.catalog_number,
+      //         key: stock.storehouse_utility_key,
+      //         genericName: item.storehouse_utility.generic_name,
+      //         presentation: `${item.storehouse_utility.presentation.name} de ${item.storehouse_utility.quantity_per_unit} ${item.storehouse_utility.unit.name}`,
+      //         expires_at: moment.utc(stock.expires_at).format("DD/MM/YYYY"),
+      //         total_quantity_presentation_left: 0,
+      //       };
+      //     });
+      //   })
+      //   .flat();
+      // if (showLessQty) {
+      //   inventorySummarized = inventorySummarized.filter(
+      //     (inventoryRecord) =>
+      //       inventoryRecord.total_quantity_presentation_left <= 100
+      //   );
+      //   dispatch(setInventoryLessQty(inventorySummarized));
+      //   return;
+      // }
+      const dataStorehouseUtilities = data.inventory.map((record) => {
             return {
-              quantity:
-                stock.quantity_presentation - stock.quantity_presentation_used,
-              lot_number: stock.lot_number,
-              catalog_number: stock.catalog_number,
-              key: stock.storehouse_utility_key,
-              genericName: item.storehouse_utility.generic_name,
-              presentation: `${item.storehouse_utility.presentation.name} de ${item.storehouse_utility.quantity_per_unit} ${item.storehouse_utility.unit.name}`,
-              expires_at: moment.utc(stock.expires_at).format("DD/MM/YYYY"),
-              total_quantity_presentation_left: 0,
-            };
-          });
-        })
-        .flat();
-      if (showLessQty) {
-        inventorySummarized = inventorySummarized.filter(
-          (inventoryRecord) =>
-            inventoryRecord.total_quantity_presentation_left <= 100
-        );
-        dispatch(setInventoryLessQty(inventorySummarized));
-        return;
-      }
-      dispatch(setInventory(inventorySummarized));
+              lot_number: record.lot_number ? record.lot_number : "",
+              catalog_number: record.catalog_number ? record.catalog_number : "",
+              key: record.storehouse_utility.key,
+              genericName: record.storehouse_utility.generic_name,
+              storehouse_utility: {final_presentation : record.storehouse_utility.final_presentation},
+              quantity_presentation_left: record.quantity_presentation_left != undefined ? record.quantity_presentation_left : record.total_quantity_presentation_left,
+              expires_at: record.expires_at ? moment(record.expires_at).format("DD/MM/YYYY") : "",
+            } as IAlmacenStore;
+          })
+      dispatch(setInventory(dataStorehouseUtilities));
     } else {
       toast.error("Error al obtener los datos de la farmacia");
       console.log(data);

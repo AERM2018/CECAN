@@ -37,8 +37,8 @@ export const startGetPharmacyData =
           const dataMedicines = data.inventory.map((record) => {
             return {
               lot_number: record.lot_number ? record.lot_number : "",
-              key: record.medicine.key,
-              name: record.medicine.name,
+              key: record.storehouse_utility.key,
+              name: record.storehouse_utility.name,
               pieces_left: record.total_pieces_left ? record.total_pieces_left : record.pieces_left,
               expires_at: record.expires_at ? moment(record.expires_at).format("DD/MM/YYYY") : "",
               semaforization_color: record.semaforization_color ? record.semaforization_color : "",
