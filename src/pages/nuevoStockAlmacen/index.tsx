@@ -4,15 +4,15 @@ import { Formik } from "formik";
 import * as Yup from "yup";
 import styles from "styles/modules/AddStock.module.scss";
 import { useAppDispatch, useAppSelector } from "hooks/hooks";
-import { startGetStorehouseList } from "store/requests/thunks";
+import { startGetStorehouseCatalogData, startGetStorehouseList } from "store/requests/thunks";
 import { startAddStockStorehouse } from "../../store/requests/thunks";
 const AddStockStorehouse = () => {
   const dispatch = useAppDispatch();
 
-  const { inventory } = useAppSelector((state) => state.storehouse);
+  const { storehouseCatalog } = useAppSelector((state) => state.storehouse);
 
   useEffect(() => {
-    dispatch(startGetStorehouseList({ searchStocks: false }));
+    dispatch(startGetStorehouseCatalogData({ limit: 100 }));
   }, []);
 
   return (
@@ -37,9 +37,9 @@ const AddStockStorehouse = () => {
                 name="key"
                 placeholder="Clave de la medicina"
                 type="select"
-                options={inventory?.map((item) => ({
+                options={storehouseCatalog?.map((item) => ({
                   value: item.key,
-                  label: item.genericName,
+                  label: item.generic_name,
                 }))}
               />
               <Input

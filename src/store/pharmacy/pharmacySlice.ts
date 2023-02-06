@@ -11,6 +11,7 @@ export interface IPharmacyState {
   pharmacyData: IMedicineStock[] | null;
   pharmacyDataLessQty: IMedicineTotalStock[] | null;
   pharmacyMedicineCatalogData: Medicine[] | null;
+  pages: number;
 }
 
 const initialState: IPharmacyState = {
@@ -18,6 +19,7 @@ const initialState: IPharmacyState = {
   pharmacyDataLessQty: null,
   pharmacyMedicineCatalogData: null,
   loading: false,
+  pages: 1,
 };
 
 export const pharmacySlice = createSlice({
@@ -36,10 +38,16 @@ export const pharmacySlice = createSlice({
     setPharmacyMedicineCatalogData: ( state,
       action: PayloadAction<Medicine[]>) => {
         state.pharmacyMedicineCatalogData = action.payload;
+    },
+    setPharmacyCatalogPages: (state, action: PayloadAction<number>) => {
+      state.pages = action.payload;
+    },
+     setPharmacyInventoryPages: (state, action: PayloadAction<number>) => {
+      state.pages = action.payload;
     }
   },
   extraReducers: (builder) => {},
 });
 
-export const { setPharmacyData, setPharmacyDataLessQty, setPharmacyMedicineCatalogData } =
+export const { setPharmacyData, setPharmacyDataLessQty, setPharmacyMedicineCatalogData,setPharmacyCatalogPages,setPharmacyInventoryPages } =
   pharmacySlice.actions;

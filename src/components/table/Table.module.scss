@@ -20,8 +20,7 @@
   font-weight: bold;
   min-width: 90rem;
   //   width: 3000px;
-
-  flex: 1;
+  // flex: 1;
 }
 .headerItem {
   border-bottom: solid 1px colors.$color-gray;
@@ -51,7 +50,7 @@
 .row {
   display: flex;
   //   justify-content: space-between;
-  padding-bottom: 0.8rem;
+  padding-bottom: 1rem;
 }
 
 .cell {

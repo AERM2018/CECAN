@@ -15,6 +15,7 @@ import {
   setCategories,
   setInventory,
   setInventoryLessQty,
+  setInventoryPages,
   setPresentations,
   setRequests,
   setStorehouseCatalogData,
@@ -54,16 +55,15 @@ export const startGetRequestStorehouse = () => async (dispatch: Dispatch) => {
   }
 };
 
-export const startGetStorehouseCatalogData = (filters?:{concidence?:string, page?:number}) => async ( dispatch: Dispatch) => {
-  const {concidence, page = 1} = filters || {}
+export const startGetStorehouseCatalogData = (filters?:{concidence?:string, page?:number, limit?:number}) => async ( dispatch: Dispatch) => {
+  const {concidence = "", page = 1, limit = 10} = filters || {}
    let queryParams = `?page=${page}&`;
-    if(concidence != undefined && concidence != ""){
-      const filters = {
+      const filtersObj = {
         utility_name: concidence,
         utility_key: concidence,
+        limit: limit
       }
-      queryParams += `${Object.keys(filters).map((key) => `${key}=${filters[key]}`).join("&")}`
-    }
+      queryParams += `${Object.keys(filtersObj).map((key) => `${key}=${filtersObj[key]}`).join("&")}`
   const {
     data: { data, ok, pages },
   } = await cecanApi.get<IAlmacenCatalogResponse>(`/storehouse_utilities${queryParams}`);
@@ -83,12 +83,14 @@ export const startGetStorehouseList =
   ({
     concidence = "",
     showLessQty = false,
+    page = 1,
   }: {
     concidence?: string;
+    page?: number;
     showLessQty?: boolean;
   }) =>
   async (dispatch: Dispatch) => {
-    let queryParams = "?";
+    let queryParams = `?page=${page}&`;
     if(showLessQty) queryParams += "show_less_qty=true&"
     if(concidence != ""){
       const filters = {
@@ -98,7 +100,7 @@ export const startGetStorehouseList =
       queryParams += `${Object.keys(filters).map((key) => `${key}=${filters[key]}`).join("&")}`
     }
     const {
-      data: { data, ok },
+      data: { data, ok,pages },
     } = await cecanApi.get<IAlmacenListResponse>(`/storehouse_inventory${queryParams}`);
     moment.locale("es");
     if (ok) {
@@ -107,12 +109,13 @@ export const startGetStorehouseList =
               lot_number: record.lot_number ? record.lot_number : "",
               catalog_number: record.catalog_number ? record.catalog_number : "",
               key: record.storehouse_utility.key,
-              genericName: record.storehouse_utility.generic_name,
+              generic_name: record.storehouse_utility.generic_name,
               storehouse_utility: {final_presentation : record.storehouse_utility.final_presentation},
               quantity_presentation_left: record.quantity_presentation_left != undefined ? record.quantity_presentation_left : record.total_quantity_presentation_left,
               expires_at: record.expires_at ? moment(record.expires_at).format("DD/MM/YYYY") : "",
             } as IAlmacenStore;
           })
+      dispatch(setInventoryPages(pages));
       dispatch(setInventory(dataStorehouseUtilities));
     } else {
       toast.error("Error al obtener los datos de la farmacia");
@@ -233,7 +236,7 @@ export const startFilterUtilities =
     utilities = utilities.filter((utility: IAlmacenStore) =>
       concidence != ""
         ? utility.key.toLocaleLowerCase().includes(concidence) ||
-          utility.genericName.toLocaleLowerCase().includes(concidence)
+          utility.generic_name.toLocaleLowerCase().includes(concidence)
         : true
     );
     switch (from) {

@@ -1,3 +1,4 @@
+import { Pagination } from "@mui/material";
 import { BaseStructure, Searcher, Table } from "components";
 import { useAppDispatch, useAppSelector } from "hooks/hooks";
 import { ITable } from "interfaces/ITable.interface";
@@ -7,16 +8,19 @@ import { startGetPharmacyCatalog } from "store/pharmacy/thunks";
 import styles from '../../styles/modules/GenerateRecipe.module.scss'
 
 const PharmacyCatalog: NextPage = () => {
-    const {pharmacyMedicineCatalogData} = useAppSelector((state) => state.pharmacy)
+    const {pharmacyMedicineCatalogData, pages} = useAppSelector((state) => state.pharmacy)
     const dispatch = useAppDispatch()
     const [medicineKey, setMedicineKey] = useState("")
+    const [page, setPage] = useState(1)
 
     useEffect(()=>{
-        dispatch(startGetPharmacyCatalog(medicineKey))
-    },[medicineKey])
+        dispatch(startGetPharmacyCatalog({concidence:medicineKey, page}))
+    },[page])
 
     const onMedicineKeyChange = (e: any) => {
       setMedicineKey(e.target.value)
+      dispatch(startGetPharmacyCatalog({concidence:e.target.value, page:1}))
+
     }
       const tableInformation: ITable = {
     headers: 
@@ -43,6 +47,11 @@ const PharmacyCatalog: NextPage = () => {
       "center",
     ] as CanvasTextAlign[],
   };
+
+    const onChangePage = (e: any, page: number) => {
+        setPage(page)
+    }
+
     return (
         <BaseStructure
             pageName="Catálogo de farmacia"
@@ -56,6 +65,16 @@ const PharmacyCatalog: NextPage = () => {
             />
           </div>
             <Table {...tableInformation}/>
+            <div className={styles.pagination}>
+              <Pagination
+                  count={pages}
+                  color="primary"
+                  size="large"
+                  shape="rounded"
+                  onChange={onChangePage}
+                />
+
+            </div>
         </div>
         </BaseStructure>
     );

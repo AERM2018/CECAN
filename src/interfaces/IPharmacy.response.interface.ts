@@ -1,11 +1,13 @@
 export interface IPharmacyCatalogResponse {
   data: CatalogData;
   ok: boolean;
+  pages: number;
 }
 
 export interface IPharmacyDataResponse {
   data: Data;
   ok: boolean;
+  pages: number;
 }
 
 export interface Data {

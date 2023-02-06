@@ -3,6 +3,7 @@
 export interface IAlmacenListResponse {
     data: Data;
     ok:   boolean;
+    pages: number;
 }
 
 export interface IAlmacenCatalogResponse {

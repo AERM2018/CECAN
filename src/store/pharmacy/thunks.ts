@@ -8,7 +8,7 @@ import {
 import { IAddMedicineResponse } from "interfaces/responses/IAddMedicine.response.interface";
 import { toast } from "react-hot-toast";
 import { Dispatch } from "redux";
-import { setPharmacyData, setPharmacyDataLessQty, setPharmacyMedicineCatalogData } from "./pharmacySlice";
+import { setPharmacyCatalogPages, setPharmacyData, setPharmacyDataLessQty, setPharmacyInventoryPages, setPharmacyMedicineCatalogData } from "./pharmacySlice";
 import { checkAuthorization } from "../../helpers/checkAuthorization";
 import { IMedicineStock } from "../../interfaces/IMedicineStock.interface";
 import { IInventory } from "interfaces/IInventoryPharmacy.interface";
@@ -31,27 +31,28 @@ export const startGetPharmacyData =
         })
       }
       const {
-        data: { data, ok },
+        data: { data, ok, pages },
       } = await cecanApi.get<IPharmacyDataResponse>(`/pharmacy_inventory${queryParams}`);
       if (ok) {
           const dataMedicines = data.inventory.map((record) => {
             return {
               lot_number: record.lot_number ? record.lot_number : "",
-              key: record.storehouse_utility.key,
-              name: record.storehouse_utility.name,
+              key: record.medicine.key,
+              name: record.medicine.name,
               pieces_left: record.total_pieces_left ? record.total_pieces_left : record.pieces_left,
               expires_at: record.expires_at ? moment(record.expires_at).format("DD/MM/YYYY") : "",
               semaforization_color: record.semaforization_color ? record.semaforization_color : "",
             } as IMedicineStock;
           })
+          dispatch(setPharmacyInventoryPages(pages));
           dispatch(setPharmacyData(dataMedicines));
       } else {
         toast.error("Error al obtener los datos de la farmacia");
         console.log(data);
       }
     } catch (error) {
-      checkAuthorization(error.response.status);
       console.log(error);
+      checkAuthorization(error.response.status);
     }
   };
 
@@ -99,6 +100,7 @@ export const startAddAMedicine =
         toast.error("Error al agregar la medicina");
       }
     } catch (error) {
+      toast.error(error.response.data.error);
       checkAuthorization(error.response.status);
       console.log(error);
     }
@@ -135,10 +137,11 @@ export const startAddStock =
     }
   };
 
-export const startGetPharmacyCatalog = (concidence?:string) => async (dispatch: Dispatch) => {
+export const startGetPharmacyCatalog = (filters?:{concidence?:string, page?:number}) => async (dispatch: Dispatch) => {
   try {
-    let queryParams = "?";
-    if(concidence != ""){
+    const {concidence,page = 1} = filters || {};
+    let queryParams = `?page=${page}&`;
+    if(concidence != undefined && concidence != ""){
       const filters ={
         key: concidence,
         name: concidence,
@@ -148,7 +151,7 @@ export const startGetPharmacyCatalog = (concidence?:string) => async (dispatch: 
       })
     }
     const {
-      data: { data, ok },
+      data: { data, ok, pages},
     } = await cecanApi.get<IPharmacyCatalogResponse>(`/medicines${queryParams}`);
     if (ok) {
       const dataMedicine = data.medicines.map((medicine) => (
@@ -159,6 +162,7 @@ export const startGetPharmacyCatalog = (concidence?:string) => async (dispatch: 
           }   
         )
       )
+      dispatch(setPharmacyCatalogPages(pages));
       dispatch(setPharmacyMedicineCatalogData(dataMedicine));
     } else {
       toast.error("Error al obtener los datos del catálogo de farmacia");

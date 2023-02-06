@@ -22,15 +22,17 @@ import { ITable } from "../../interfaces/ITable.interface";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { IMedicineStock } from "interfaces/IMedicineStock.interface";
+import { Pagination } from "@mui/material";
 
 const PharmacyCatalog: NextPage = (props) => {
-  let { pharmacyData, pharmacyDataLessQty } = useAppSelector(
+  let { pharmacyData, pharmacyDataLessQty, pages } = useAppSelector(
     (state) => state.pharmacy
   );
   const dispatch = useAppDispatch();
 
   const [medicineKey, setmedicineKey] = useState("");
   const [showLessQty, setShowLessQty] = useState(false);
+  const [page, setPage] = useState(1);
 
   useEffect(() => {
     // if (!pharmacyData) {
@@ -93,6 +95,10 @@ const PharmacyCatalog: NextPage = (props) => {
     setShowLessQty(!showLessQty);
   };
 
+  const onChangePage = (e, value) => {
+    setPage(value);
+  };
+
   return (
     <BaseStructure
      pageName="Invetario de Farmacía"
@@ -115,6 +121,16 @@ const PharmacyCatalog: NextPage = (props) => {
             </button>
           </div>
           <Table {...tableInformation} />
+          <div className={styles.pagination}>
+              <Pagination
+                  count={pages}
+                  color="primary"
+                  size="large"
+                  shape="rounded"
+                  onChange={onChangePage}
+                />
+
+            </div>
     </div>
     </BaseStructure>
     // <div className={styles.container}>

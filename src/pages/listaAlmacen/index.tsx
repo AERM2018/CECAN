@@ -8,12 +8,14 @@ import {
   startFilterUtilities,
   startGetStorehouseList,
 } from "../../store/requests/thunks";
+import { Pagination } from "@mui/material";
 const ListAlmacen: NextPage = () => {
-  const { inventory, inventoryLessQty } = useAppSelector(
+  const { inventory, inventoryLessQty, pages } = useAppSelector(
     (state) => state.storehouse
   );
   const dispatch = useAppDispatch();
   const [utilityKey, setUtilityKey] = useState("");
+  const [page, setPage] = useState(1);
   const [showUtilitiesLessQty, setShowUtilitiesLessQty] = useState(false);
   const tableElements: ITable = {
     headers: !showUtilitiesLessQty
@@ -21,14 +23,14 @@ const ListAlmacen: NextPage = () => {
           { id: "key", label: "Clave" },
           { id: "lot_number", label: "No. de lote" },
           { id: "catalog_number", label: "No. de catálogo" },
-          { id: "genericName", label: "Nombre Generico" },
+          { id: "generic_name", label: "Nombre Generico" },
           { id: "storehouse_utility.final_presentation", label: "Presentación" },
           { id: "expires_at", label: "Expira el" },
           { id: "quantity_presentation_left", label: "Cantidad" },
         ]
       : [
           { id: "key", label: "Clave" },
-          { id: "genericName", label: "Nombre Generico" },
+          { id: "generic_name", label: "Nombre Generico" },
           { id: "storehouse_utility.final_presentation", label: "Presentación" },
           {
             id: "quantity_presentation_left",
@@ -47,29 +49,33 @@ const ListAlmacen: NextPage = () => {
   };
 
   useEffect(() => {
-      dispatch(startGetStorehouseList({ showLessQty: showUtilitiesLessQty, concidence:utilityKey }));
-  }, [utilityKey, showUtilitiesLessQty]);
+      dispatch(startGetStorehouseList({ showLessQty: showUtilitiesLessQty, concidence:utilityKey, page }));
+  }, [utilityKey, showUtilitiesLessQty, page]);
 
   const onUtilikyKeyChange = (e) => {
     setUtilityKey(e.target.value);
+    dispatch(startGetStorehouseList({ showLessQty: showUtilitiesLessQty, concidence:utilityKey, page:1 }));
   };
 
-  const onSubmitUtilityKey = (e) => {
-    e.preventDefault();
-    const params = {
-      utilityKey,
-      inventory: showUtilitiesLessQty ? inventoryLessQty : inventory,
-      from: showUtilitiesLessQty ? "catalogLessQty" : "catalog",
-    };
-    dispatch(
-      startFilterUtilities(
-        params["utilityKey"],
-        params["inventory"],
-        params["from"]
-      )
-    );
-  };
+  // const onSubmitUtilityKey = (e) => {
+  //   e.preventDefault();
+  //   const params = {
+  //     utilityKey,
+  //     inventory: showUtilitiesLessQty ? inventoryLessQty : inventory,
+  //     from: showUtilitiesLessQty ? "catalogLessQty" : "catalog",
+  //   };
+  //   dispatch(
+  //     startFilterUtilities(
+  //       params["utilityKey"],
+  //       params["inventory"],
+  //       params["from"]
+  //     )
+  //   );
+  // };
 
+  const onChangePage = (e, value) => {
+    setPage(value);
+  };
   const onShowLessQtyChange = () => {
     setShowUtilitiesLessQty(!showUtilitiesLessQty);
     setUtilityKey("");
@@ -86,7 +92,6 @@ const ListAlmacen: NextPage = () => {
             <Searcher
               value={utilityKey}
               onChangeSearchValue={onUtilikyKeyChange}
-              onSubmitSearch={onSubmitUtilityKey}
               placeholder="Busca por clave o nombre de utilidad de almácen"
             />
             <button
@@ -99,6 +104,16 @@ const ListAlmacen: NextPage = () => {
             </button>
           </div>
           <Table {...tableElements} />
+          <div className={styles.pagination}>
+              <Pagination
+                  count={pages}
+                  color="primary"
+                  size="large"
+                  shape="rounded"
+                  onChange={onChangePage}
+                />
+
+            </div>
         </div>
       </div>
     </div>

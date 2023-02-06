@@ -104,10 +104,15 @@ export const startSupplyingARecipie =
     }
   };
 
-export const startGetMedicines = () => async (dispatch: Dispatch) => {
+export const startGetMedicines = (concidence?:string) => async (dispatch: Dispatch) => {
+  const filters = {
+    "name": concidence,
+    "key": concidence,
+  }
+  const queryParams = concidence && concidence != "" ? Object.keys(filters).map(key => key + '=' + filters[key]).join('&') : "";
   const {
     data: { data, ok },
-  } = await cecanApi.get<IMedicinesResponse>("/medicines");
+  } = await cecanApi.get<IMedicinesResponse>(`/medicines?${queryParams}`);
 
   if (ok) {
     dispatch(setMedicines(data.medicines));

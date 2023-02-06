@@ -124,13 +124,13 @@ export const requestsSlice = createSlice({
         state.activeStorehouseUtilities
           ? state.activeStorehouseUtilities.push({
               key: action.payload.key,
-              genericName: action.payload.genericName,
+              generic_name: action.payload.generic_name,
               quantity: 1,
             })
           : (state.activeStorehouseUtilities = [
               {
                 key: action.payload.key,
-                genericName: action.payload.genericName,
+                generic_name: action.payload.generic_name,
                 quantity: 1,
               },
             ]);
@@ -177,13 +177,13 @@ export const requestsSlice = createSlice({
         state.activeStorehouseUtilities
           ? state.activeStorehouseUtilities.push({
               key: action.payload.key,
-              genericName: action.payload.genericName,
+              generic_name: action.payload.generic_name,
               quantity: 1,
             })
           : (state.activeStorehouseUtilities = [
               {
                 key: action.payload.key,
-                genericName: action.payload.genericName,
+                generic_name: action.payload.generic_name,
                 quantity: 1,
               },
             ]);
@@ -202,6 +202,9 @@ export const requestsSlice = createSlice({
       state.storehouseCatalog = action.payload;
     },
     setCatalogPages: (state, action: PayloadAction<number>) => {
+      state.pages = action.payload;
+    },
+    setInventoryPages: (state, action: PayloadAction<number>) => {
       state.pages = action.payload;
     }
   },
@@ -225,5 +228,6 @@ export const {
   setInventoryLessQty,
   findRequestByFolio,
   setStorehouseCatalogData,
-  setCatalogPages
+  setCatalogPages,
+  setInventoryPages
 } = requestsSlice.actions;

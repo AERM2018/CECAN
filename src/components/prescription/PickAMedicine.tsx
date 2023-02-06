@@ -66,17 +66,7 @@ export const PickAMedicine: FC<PickAMedicineProps> = ({
   };
 
   useEffect(() => {
-    if (!medicines || medicineKey == "") {
-      dispatch(startGetMedicines());
-    }
-    // setRenderMedicine(
-    //   medicines?.filter((medicine) => {
-    //     const activeMedicine = activeMedicines?.find(
-    //       (activeMedicine) => activeMedicine.key === medicine.key
-    //     );
-    //     return !activeMedicine;
-    //   })
-    // );
+      dispatch(startGetMedicines(medicineKey));
   }, [medicineKey]);
 
   return (
@@ -95,7 +85,7 @@ export const PickAMedicine: FC<PickAMedicineProps> = ({
             <h2>Seleccione una medicina a agregar</h2>
             <Searcher
               onChangeSearchValue={onMedicineKeyChange}
-              onSubmitSearch={onSubmitMedicineKey}
+              // onSubmitSearch={onSubmitMedicineKey}
               value={medicineKey}
               placeholder="Escriba la clave o nombre de medicina"
             />

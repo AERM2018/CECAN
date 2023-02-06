@@ -9,10 +9,6 @@ import styles from "styles/modules/GenerateRequest.module.scss";
 const GenerateRequest: NextPage = () => {
   const dispatch = useAppDispatch();
 
-  useEffect(() => {
-    dispatch(startGetStorehouseList({ searchStocks: false }));
-  }, []);
-
   return (
     <>
       <BaseStructure pageName="Generar solicitud de almácen">

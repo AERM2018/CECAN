@@ -23,9 +23,9 @@ const Users: NextPage = () => {
       { id: "full_name", label: "Nombre" },
     ],
     rows: users as ITable["rows"],
-    percentages: [25, 45, 30],
+    percentages: [15, 30, 50],
     textDisplay: ["center", "center", "center"],
-    elements: ["text", "text", "text", "text"],
+    elements: ["text", "text", "text"],
     keyName: "key",
   };
 

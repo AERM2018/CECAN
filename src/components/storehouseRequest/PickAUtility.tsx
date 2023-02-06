@@ -10,6 +10,7 @@ import { faPlusCircle } from "@fortawesome/free-solid-svg-icons";
 import { Searcher } from "components";
 import {
   startFilterUtilities,
+  startGetStorehouseCatalogData,
   startGetStorehouseList,
 } from "store/requests/thunks";
 import { IAlmacenStore } from "interfaces/IAlmacen.interface";
@@ -27,7 +28,7 @@ export const PickAUtility: FC<PickAMedicineProps> = ({
   // medicines,
 }) => {
   const {
-    storehouse: { activeStorehouseUtilities, inventory },
+    storehouse: { activeStorehouseUtilities, storehouseCatalog },
   } = useAppSelector((state) => state);
 
   const dispatch = useAppDispatch();
@@ -36,27 +37,26 @@ export const PickAUtility: FC<PickAMedicineProps> = ({
     dispatch(toggleModal());
   };
   const [utilityKey, setUtilityKey] = useState("");
+  const [page, setPage] = useState(1);
 
   const onUtilityKeyChange = (e) => {
     e.preventDefault();
     setUtilityKey(e.target.value);
   };
 
-  const onSubmitUtilityKey = (e) => {
-    e.preventDefault();
-    dispatch(
-      startFilterUtilities(
-        utilityKey,
-        inventory as IAlmacenStore[],
-        "generateRequest"
-      )
-    );
-  };
+  // const onSubmitUtilityKey = (e) => {
+  //   e.preventDefault();
+  //   dispatch(
+  //     startFilterUtilities(
+  //       utilityKey,
+  //       storehouseCatalog as IAlmacenStore[],
+  //       "generateRequest"
+  //     )
+  //   );
+  // };
 
   useEffect(() => {
-    if (!inventory || utilityKey == "") {
-      dispatch(startGetStorehouseList({ searchStocks: false }));
-    }
+      dispatch(startGetStorehouseCatalogData({ concidence:utilityKey, page, limit: 100 }));
   }, [utilityKey]);
 
   return (
@@ -70,12 +70,11 @@ export const PickAUtility: FC<PickAMedicineProps> = ({
       }}
     >
       <div className={styles.modal}>
-        {inventory && inventory.length > 0 ? (
+        {storehouseCatalog && storehouseCatalog.length > 0 ? (
           <>
             <h2>Seleccione una utilidad a agregar</h2>
             <Searcher
               onChangeSearchValue={onUtilityKeyChange}
-              onSubmitSearch={onSubmitUtilityKey}
               value={utilityKey}
               placeholder="Escriba la clave o nombre de la utilidad"
             />
@@ -85,8 +84,8 @@ export const PickAUtility: FC<PickAMedicineProps> = ({
         )}
 
         <div className={styles.medicinesContainer}>
-          {inventory && inventory.length > 0 ? (
-            inventory
+          {storehouseCatalog && storehouseCatalog.length > 0 ? (
+            storehouseCatalog
               .filter((utility) => {
                 const activeMedicine = activeStorehouseUtilities?.find(
                   (activeUtility) => activeUtility.key === utility.key
@@ -103,7 +102,7 @@ export const PickAUtility: FC<PickAMedicineProps> = ({
                   }}
                 >
                   <p>{utility.key}</p>
-                  <p>{utility.genericName}</p>
+                  <p>{utility.generic_name}</p>
                   <FontAwesomeIcon icon={faPlusCircle} />
                 </div>
               ))

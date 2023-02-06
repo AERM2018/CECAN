@@ -30,7 +30,7 @@ const Departments: NextPage = (props) => {
     ],
     rows: departments,
     elements: ["TEXT", "TEXT", "TEXT", "TEXT", "SELECT-USER"],
-    percentages: [30, 25, 10, 15, 20],
+    percentages: [15, 35, 20, 15, 15],
     textDisplay: [
       "center",
       "center",

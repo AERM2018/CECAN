@@ -25,7 +25,7 @@ export const GenerateStorehouseRequest: FC = () => {
   const tableElements: ITable = {
     headers: [
       { id: "key", label: "Clave" },
-      { id: "genericName", label: "Nombre generico" },
+      { id: "generic_name", label: "Nombre generico" },
       { id: "quantity", label: "Cantidad" },
       { id: "remove", label: "" },
     ],

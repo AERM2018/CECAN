@@ -8,7 +8,7 @@ export interface IAlmacen {
 
 export interface IAlmacenStore {
   key: string;
-  genericName: string;
+  generic_name: string;
   "storehouse_utility.final_presentation"?: string;
   quantity_per_unit?: number;
   quantity_presentation_left?: number;
