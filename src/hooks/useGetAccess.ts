@@ -3,6 +3,7 @@ import {
   faBoxArchive,
   faBoxesStacked,
   faBuildingUser,
+  faCapsules,
   faClipboardCheck,
   faFileCirclePlus,
   faFileMedical,
@@ -20,9 +21,15 @@ export const useGetAccess = (role: string) => {
 
 const items = [
   {
-    icon: faPrescriptionBottleMedical,
-    text: "Cátalogo",
+    icon: faCapsules,
+    text: "Catálogo de farmacia",
     path: "catalogoFarmacia",
+    role: ["Admin", "Farmacia"],
+  },
+  {
+    icon: faPrescriptionBottleMedical,
+    text: "Inventario de farmacia",
+    path: "inventarioFarmacia",
     role: ["Admin", "Farmacia"],
   },
   {

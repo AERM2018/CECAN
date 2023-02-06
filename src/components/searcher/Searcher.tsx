@@ -9,7 +9,7 @@ export const Searcher = ({
   placeholder,
   onChangeSearchValue,
 }: {
-  onSubmitSearch: Function;
+  onSubmitSearch?: Function;
   value: string;
   placeholder: string;
   onChangeSearchValue: Function;

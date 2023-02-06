@@ -1,3 +1,7 @@
+export interface IPharmacyCatalogResponse {
+  data: CatalogData;
+  ok: boolean;
+}
 
 export interface IPharmacyDataResponse {
   data: Data;
@@ -5,12 +9,17 @@ export interface IPharmacyDataResponse {
 }
 
 export interface Data {
-  inventory: Inventory[];
+  inventory: Inventory[] | Stock[];
+}
+
+export interface CatalogData {
+  medicines: Medicine[];
 }
 
 export interface Inventory {
+  medicine_key: string;
   medicine: Medicine;
-  stocks: Stock[];
+  stocks?: Stock[];
   pieces_left_by_semaforization_color: PiecesLeftBySemaforizationColor;
   total_pieces: number;
   total_pieces_left: number;
@@ -19,6 +28,8 @@ export interface Inventory {
 export interface Medicine {
   key: string;
   name: string;
+  created_at?: string;
+  updated_at?: string;
   deleted_at: null;
 }
 

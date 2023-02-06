@@ -43,3 +43,25 @@
     background-color: colors.$primary;
   }
 }
+
+.redCircleIndicator {
+  color: colors.$color-red;
+  // border-radius: 50%;
+  // width: 1rem;
+  // height: 1rem;
+  // margin-left: 0.5rem;
+}
+.ambarCircleIndicator {
+  color: colors.$color-ambar;
+  // border-radius: 50%;
+  // width: 1rem;
+  // height: 1rem;
+  // margin-left: 0.5rem;
+}
+.greenCircleIndicator {
+  color: colors.$color-green;
+  // border-radius: 50%;
+  // width: 1rem;
+  // height: 1rem;
+  // margin-left: 0.5rem;
+}

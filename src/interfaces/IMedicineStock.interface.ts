@@ -4,6 +4,7 @@ export interface IMedicineStock {
   lot_number: string;
   name: string;
   expires_at: string;
+  semaforization_color: string;
   pieces_left: number;
 }
 

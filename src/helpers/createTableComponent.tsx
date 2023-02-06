@@ -2,6 +2,7 @@ import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { IconProp, text } from "@fortawesome/fontawesome-svg-core";
 import {
   faAdd,
+  faCircle,
   faPenToSquare,
   faPrint,
   faTrash,
@@ -79,6 +80,23 @@ export const createTableComponent = (details: TableComponentDetails) => {
 
     case "SELECT-USER":
       return <SelectUser idDepartment={id} onClick={onClick!} />;
+
+    case "CIRCLE-INDICATOR":
+      let colorStyle;
+      switch (content) {
+        case "red":
+          colorStyle = styles.redCircleIndicator;
+          break;
+        case "ambar":
+          colorStyle = styles.ambarCircleIndicator;
+          break;
+        case "green":
+          colorStyle = styles.greenCircleIndicator;
+          break;
+        default:
+          break;
+      }
+        return <FontAwesomeIcon icon={faCircle} className={colorStyle} />;
 
     default:
       return <div key={id}>{content}</div>;

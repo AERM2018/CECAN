@@ -1,12 +1,14 @@
 import cecanApi from "api/cecanApi";
 import {
+  IPharmacyCatalogResponse,
   IPharmacyDataResponse,
+  Medicine,
   Stock,
 } from "interfaces/IPharmacy.response.interface";
 import { IAddMedicineResponse } from "interfaces/responses/IAddMedicine.response.interface";
 import { toast } from "react-hot-toast";
 import { Dispatch } from "redux";
-import { setPharmacyData, setPharmacyDataLessQty } from "./pharmacySlice";
+import { setPharmacyData, setPharmacyDataLessQty, setPharmacyMedicineCatalogData } from "./pharmacySlice";
 import { checkAuthorization } from "../../helpers/checkAuthorization";
 import { IMedicineStock } from "../../interfaces/IMedicineStock.interface";
 import { IInventory } from "interfaces/IInventoryPharmacy.interface";
@@ -14,59 +16,35 @@ import moment from "moment";
 import { setMedicines } from "store/recipes/recipesSlice";
 
 export const startGetPharmacyData =
-  (showLessQty?: boolean) => async (dispatch: Dispatch) => {
+  (filters?: {showLessQty?: boolean, concidence?: string}) => async (dispatch: Dispatch) => {
+    const {showLessQty, concidence} = filters || {};
     try {
+      let queryParams = "?";
+      if(showLessQty) queryParams += "show_less_qty=true&";
+      if(concidence != ""){
+        const paramsForConcidence = {
+          medicine_key: concidence,
+          medicine_name: concidence,
+        }
+        Object.entries(paramsForConcidence).forEach(([key, value]) => {
+          queryParams += `${key}=${value}&`;
+        })
+      }
       const {
         data: { data, ok },
-      } = await cecanApi.get<IPharmacyDataResponse>("/pharmacy_inventory");
+      } = await cecanApi.get<IPharmacyDataResponse>(`/pharmacy_inventory${queryParams}`);
       if (ok) {
-        console.log(data.inventory);
-        if (data.inventory === null) {
-          toast.error("No hay inventario disponible");
-        } else {
-          if (showLessQty) {
-            const dataMedicinesLessQty = data.inventory
-              .map((invetoryRecord) => {
-                const { stocks, pieces_left_by_semaforization_color, ...rest } =
-                  invetoryRecord;
-                return {
-                  key: rest.medicine.key,
-                  name: rest.medicine.name,
-                  pieces_left: rest.total_pieces_left,
-                };
-              })
-              .filter((inventoryRecord) => inventoryRecord.pieces_left <= 100);
-            dispatch(setPharmacyDataLessQty(dataMedicinesLessQty));
-            return;
-          }
-          const dataMedicines = [];
-          data.inventory.forEach((medicine: IInventory) => {
-            if (medicine.stocks.length > 0) {
-              medicine.stocks.map((stock: Stock) => {
-                const medicineStock: IMedicineStock = {
-                  key: medicine.medicine.key,
-                  id: medicine.medicine.key,
-                  name: medicine.medicine.name,
-                  lot_number: stock.lot_number,
-                  pieces_left: stock.pieces_left,
-                  expires_at: moment(stock.expires_at).format("DD/MM/YYYY"),
-                };
-                dataMedicines.push(medicineStock);
-              });
-            } else {
-              const medicineStock: IMedicineStock = {
-                key: medicine.medicine.key,
-                id: medicine.medicine.key,
-                name: medicine.medicine.name,
-                lot_number: "No definido",
-                pieces_left: 0,
-                expires_at: "No definido",
-              };
-              dataMedicines.push(medicineStock);
-            }
-          });
+          const dataMedicines = data.inventory.map((record) => {
+            return {
+              lot_number: record.lot_number ? record.lot_number : "",
+              key: record.medicine.key,
+              name: record.medicine.name,
+              pieces_left: record.total_pieces_left ? record.total_pieces_left : record.pieces_left,
+              expires_at: record.expires_at ? moment(record.expires_at).format("DD/MM/YYYY") : "",
+              semaforization_color: record.semaforization_color ? record.semaforization_color : "",
+            } as IMedicineStock;
+          })
           dispatch(setPharmacyData(dataMedicines));
-        }
       } else {
         toast.error("Error al obtener los datos de la farmacia");
         console.log(data);
@@ -76,6 +54,7 @@ export const startGetPharmacyData =
       console.log(error);
     }
   };
+
 export const startFilterMedicine =
   (concidence: string, medicines: IMedicineStock[], from: string) =>
   async (dispatch: Dispatch) => {
@@ -155,3 +134,38 @@ export const startAddStock =
       console.log(error);
     }
   };
+
+export const startGetPharmacyCatalog = (concidence?:string) => async (dispatch: Dispatch) => {
+  try {
+    let queryParams = "?";
+    if(concidence != ""){
+      const filters ={
+        key: concidence,
+        name: concidence,
+      }
+      Object.entries(filters).forEach(([key, value]) => {
+        queryParams += `${key}=${value}&`;
+      })
+    }
+    const {
+      data: { data, ok },
+    } = await cecanApi.get<IPharmacyCatalogResponse>(`/medicines${queryParams}`);
+    if (ok) {
+      const dataMedicine = data.medicines.map((medicine) => (
+          {
+            ...medicine, 
+            created_at: moment(medicine.created_at).format("DD/MM/YYYY hh:mm A"),
+            updated_at: moment(medicine.updated_at).format("DD/MM/YYYY hh:mm A"),
+          }   
+        )
+      )
+      dispatch(setPharmacyMedicineCatalogData(dataMedicine));
+    } else {
+      toast.error("Error al obtener los datos del catálogo de farmacia");
+      console.log(data);
+    }
+  } catch (error) {
+    checkAuthorization(error.response.status);
+    console.log(error);
+  }
+}
