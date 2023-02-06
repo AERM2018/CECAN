@@ -5,6 +5,15 @@ export interface IAlmacenListResponse {
     ok:   boolean;
 }
 
+export interface IAlmacenCatalogResponse {
+    data: CatalogData;
+    ok:   boolean;
+    pages: number;
+}
+
+export interface CatalogData {
+    storehouse_utilities:  StorehouseUtility[];
+}
 export interface Data {
     inventory:  Stock[] | Inventory[];
 }

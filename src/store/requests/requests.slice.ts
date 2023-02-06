@@ -4,6 +4,7 @@ import {
   Dispatch,
   PayloadAction,
 } from "@reduxjs/toolkit";
+import { StorehouseUtility } from "interfaces/IAlmacenListaResponse.response.interface";
 import {
   IMedicine,
   IMedicineCatalog,
@@ -32,7 +33,9 @@ export interface IRequestsState {
   units: IStorehouseUtility[] | null;
   categories: IStorehouseUtility[] | null;
   presentations: IStorehouseUtility[] | null;
+  storehouseCatalog: StorehouseUtility[] | null;
   loading: boolean;
+  pages: number;
 }
 
 const initialState: IRequestsState = {
@@ -45,7 +48,9 @@ const initialState: IRequestsState = {
   units: null,
   categories: null,
   presentations: null,
+  storehouseCatalog: null,
   loading: false,
+  pages: 1,
 };
 
 export const requestsSlice = createSlice({
@@ -193,6 +198,12 @@ export const requestsSlice = createSlice({
         state.requests = [request];
       }
     },
+    setStorehouseCatalogData: ( state, action: PayloadAction<StorehouseUtility[]> ) => {
+      state.storehouseCatalog = action.payload;
+    },
+    setCatalogPages: (state, action: PayloadAction<number>) => {
+      state.pages = action.payload;
+    }
   },
   extraReducers: (builder) => {},
 });
@@ -213,4 +224,6 @@ export const {
   modifyUtilitiesQuantityToSupply,
   setInventoryLessQty,
   findRequestByFolio,
+  setStorehouseCatalogData,
+  setCatalogPages
 } = requestsSlice.actions;

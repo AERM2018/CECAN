@@ -15,7 +15,7 @@ import {
   IMedicineTotalStock,
 } from "./IMedicineStock.interface";
 import { User } from "./IUser.interface";
-import { Stock } from "./IAlmacenListaResponse.response.interface";
+import { Stock, StorehouseUtility } from "./IAlmacenListaResponse.response.interface";
 
 export interface ITable extends IOnClick {
   headers: ITHeaders[];
@@ -32,6 +32,7 @@ export interface ITable extends IOnClick {
     | IMedicineSuscription[]
     | IMedicineTotalStock[]
     | IStorehouseRequestUtility[]
+    | StorehouseUtility[]
     | null;
   percentages: number[];
   percentageUnits?: string;

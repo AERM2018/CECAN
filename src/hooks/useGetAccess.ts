@@ -2,6 +2,7 @@ import {
   faAdd,
   faBoxArchive,
   faBoxesStacked,
+  faBoxOpen,
   faBuildingUser,
   faCapsules,
   faClipboardCheck,
@@ -69,8 +70,14 @@ const items = [
     role: ["Admin", "Almacén"],
   },
   {
+    icon: faBoxOpen,
+    text: "Catálogo de almacén",
+    path: "catalogoAlmacen",
+    role: ["Admin", "Almacén"],
+  },
+  {
     icon: faBoxesStacked,
-    text: "Lista de almacen",
+    text: "Inventario de almacen",
     path: "listaAlmacen",
     role: ["Admin", "Almacén"],
   },

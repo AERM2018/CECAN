@@ -95,7 +95,7 @@ const ListAlmacen: NextPage = () => {
             >
               {showUtilitiesLessQty
                 ? "Mostrar todos los stocks"
-                : "Mostrar utilidades con poco stock"}
+                : "Mostrar por utilidades"}
             </button>
           </div>
           <Table {...tableElements} />

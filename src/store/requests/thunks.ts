@@ -11,16 +11,18 @@ import {
   clearActiveStorehouseUtilities,
   removeStorehouseRequest,
   setActiveStorehouseRequest,
+  setCatalogPages,
   setCategories,
   setInventory,
   setInventoryLessQty,
   setPresentations,
   setRequests,
+  setStorehouseCatalogData,
   setUnits,
 } from "./requests.slice";
 import "moment/locale/es";
 import { Request } from "interfaces/IRequestStore.response.interface";
-import { IAlmacenListResponse } from "interfaces/IAlmacenListaResponse.response.interface";
+import { IAlmacenCatalogResponse, IAlmacenListResponse } from "interfaces/IAlmacenListaResponse.response.interface";
 import { AppDispatch } from "../store";
 import {
   IAlmacenStore,
@@ -52,6 +54,31 @@ export const startGetRequestStorehouse = () => async (dispatch: Dispatch) => {
   }
 };
 
+export const startGetStorehouseCatalogData = (filters?:{concidence?:string, page?:number}) => async ( dispatch: Dispatch) => {
+  const {concidence, page = 1} = filters || {}
+   let queryParams = `?page=${page}&`;
+    if(concidence != undefined && concidence != ""){
+      const filters = {
+        utility_name: concidence,
+        utility_key: concidence,
+      }
+      queryParams += `${Object.keys(filters).map((key) => `${key}=${filters[key]}`).join("&")}`
+    }
+  const {
+    data: { data, ok, pages },
+  } = await cecanApi.get<IAlmacenCatalogResponse>(`/storehouse_utilities${queryParams}`);
+  moment.locale("es");
+  const dateFormat = "DD/MM/YYYY hh:mm A";
+  if (ok) {
+    const storehouseCatalogData = data.storehouse_utilities.map((utility) => (
+      {...utility, created_at: moment(utility.created_at).format(dateFormat), updated_at: moment(utility.updated_at).format(dateFormat)}
+    ))
+    dispatch(setCatalogPages(pages))
+    dispatch(setStorehouseCatalogData(storehouseCatalogData))
+  }
+
+}
+
 export const startGetStorehouseList =
   ({
     concidence = "",
@@ -75,46 +102,6 @@ export const startGetStorehouseList =
     } = await cecanApi.get<IAlmacenListResponse>(`/storehouse_inventory${queryParams}`);
     moment.locale("es");
     if (ok) {
-      // let inventorySummarized = data.inventory
-      //   .map((item) => {
-      //     if (item.stocks.length == 0 || !searchStocks || showLessQty) {
-      //       return [
-      //         {
-      //           quantity: 0,
-      //           lot_number: "No definido",
-      //           catalog_number: "No definido",
-      //           key: item.storehouse_utility.key,
-      //           genericName: item.storehouse_utility.generic_name,
-      //           presentation: `${item.storehouse_utility.presentation.name} de ${item.storehouse_utility.quantity_per_unit} ${item.storehouse_utility.unit.name}`,
-      //           expires_at: "N/A",
-      //           total_quantity_presentation_left:
-      //             item.total_quantity_presentation_left,
-      //         },
-      //       ];
-      //     }
-      //     return item.stocks.map((stock) => {
-      //       return {
-      //         quantity:
-      //           stock.quantity_presentation - stock.quantity_presentation_used,
-      //         lot_number: stock.lot_number,
-      //         catalog_number: stock.catalog_number,
-      //         key: stock.storehouse_utility_key,
-      //         genericName: item.storehouse_utility.generic_name,
-      //         presentation: `${item.storehouse_utility.presentation.name} de ${item.storehouse_utility.quantity_per_unit} ${item.storehouse_utility.unit.name}`,
-      //         expires_at: moment.utc(stock.expires_at).format("DD/MM/YYYY"),
-      //         total_quantity_presentation_left: 0,
-      //       };
-      //     });
-      //   })
-      //   .flat();
-      // if (showLessQty) {
-      //   inventorySummarized = inventorySummarized.filter(
-      //     (inventoryRecord) =>
-      //       inventoryRecord.total_quantity_presentation_left <= 100
-      //   );
-      //   dispatch(setInventoryLessQty(inventorySummarized));
-      //   return;
-      // }
       const dataStorehouseUtilities = data.inventory.map((record) => {
             return {
               lot_number: record.lot_number ? record.lot_number : "",
