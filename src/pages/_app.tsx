@@ -16,12 +16,15 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }: AppProps) {
   useEffect(() => {
     (async () => {
       const sessionData = await getSession();
+      console.log("NEXT-AUTH",process.env.NEXTAUTH_URL);
       if (sessionData) {
         if (!sessionData.user.token && Router.pathname !== "/login") {
-          window.location.href = "/login";
+          Router.push("/login");
         } else if (sessionData.user.token && Router.pathname === "/login") {
-          // window.location.href = "/catalogoFarmacia";
+          Router.push("/login");
         }
+      }else{
+        Router.push("/login");
       }
     })();
     // const token = localStorage.getItem("token");
