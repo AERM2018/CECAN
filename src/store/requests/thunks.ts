@@ -5,7 +5,6 @@ import {
   RequestWithUtilities,
 } from "interfaces/IRequestStore.response.interface";
 import moment from "moment";
-import 'moment-timezone';
 import { toast } from "react-hot-toast";
 import { Dispatch } from "redux";
 import {
