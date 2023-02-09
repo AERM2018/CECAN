@@ -5,6 +5,7 @@ import {
   RequestWithUtilities,
 } from "interfaces/IRequestStore.response.interface";
 import moment from "moment";
+import 'moment-timezone';
 import { toast } from "react-hot-toast";
 import { Dispatch } from "redux";
 import {
@@ -31,18 +32,21 @@ import {
 } from "interfaces/IAlmacen.interface";
 import download from "downloadjs";
 import { getFilePropsFromResponse } from "helpers/getFileName";
+import { setLoading } from "store/ui/uiSlice";
 
 export const startGetRequestStorehouse = () => async (dispatch: Dispatch) => {
+  dispatch(setLoading(true));
   const {
     data: { data, ok },
   } = await cecanApi.get<IRequestStoreHouseResponse>("/storehouse/requests");
   moment.locale("es");
+  dispatch(setLoading(false)); 
   if (ok) {
     dispatch(
       setRequests(
         data.requests.map((item) => ({
           id: item.id,
-          created_at: moment.utc(item.created_at).format("DD/MM/YYYY hh:mm A"),
+          created_at: moment.utc(item.created_at).utc().format("DD/MM/YYYY hh:mm A"),
           folio: item.folio,
           name: item.user.name,
           status: item.status.name,
@@ -64,10 +68,12 @@ export const startGetStorehouseCatalogData = (filters?:{concidence?:string, page
         limit: limit
       }
       queryParams += `${Object.keys(filtersObj).map((key) => `${key}=${filtersObj[key]}`).join("&")}`
+    dispatch(setLoading(true));
   const {
     data: { data, ok, pages },
   } = await cecanApi.get<IAlmacenCatalogResponse>(`/storehouse_utilities${queryParams}`);
   moment.locale("es");
+  dispatch(setLoading(false));
   const dateFormat = "DD/MM/YYYY hh:mm A";
   if (ok) {
     const storehouseCatalogData = data.storehouse_utilities.map((utility) => (
@@ -99,10 +105,12 @@ export const startGetStorehouseList =
       }
       queryParams += `${Object.keys(filters).map((key) => `${key}=${filters[key]}`).join("&")}`
     }
+    dispatch(setLoading(true));
     const {
       data: { data, ok,pages },
     } = await cecanApi.get<IAlmacenListResponse>(`/storehouse_inventory${queryParams}`);
     moment.locale("es");
+    setTimeout(() => { dispatch(setLoading(false)); }, 3000);
     if (ok) {
       const dataStorehouseUtilities = data.inventory.map((record) => {
             return {
@@ -112,7 +120,8 @@ export const startGetStorehouseList =
               generic_name: record.storehouse_utility.generic_name,
               storehouse_utility: {final_presentation : record.storehouse_utility.final_presentation},
               quantity_presentation_left: record.quantity_presentation_left != undefined ? record.quantity_presentation_left : record.total_quantity_presentation_left,
-              expires_at: record.expires_at ? moment(record.expires_at).format("DD/MM/YYYY") : "",
+              expires_at: record.expires_at ? moment(record.expires_at).utc().format("DD/MM/YYYY") : "",
+              semaforization_color: record.semaforization_color ? record.semaforization_color : "",
             } as IAlmacenStore;
           })
       dispatch(setInventoryPages(pages));

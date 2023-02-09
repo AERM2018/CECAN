@@ -1,4 +1,4 @@
-import { Pagination } from "@mui/material";
+import { CircularProgress, Pagination } from "@mui/material";
 import { BaseStructure, Searcher, Table } from "components";
 import { useAppDispatch, useAppSelector } from "hooks/hooks";
 import { ITable } from "interfaces/ITable.interface";
@@ -9,6 +9,9 @@ import styles from "../../styles/modules/GenerateRecipe.module.scss";
 
 const StorehouseCatalog: NextPage = () => {
     const {storehouseCatalog, pages} = useAppSelector((state) => state.storehouse)
+    let { isLoading } = useAppSelector(
+      (state) => state.ui
+    );
     const dispatch = useAppDispatch()
     const [storehouseUtilityKey,setStorehouseUtilityKey] = useState("")
     const [page,setPage] = useState(1)
@@ -62,15 +65,23 @@ const StorehouseCatalog: NextPage = () => {
                         placeholder="Busca utilidad de almacén"
                     />
                 </div>
-                <Table {...tableInformation}/>
-                <Pagination
-                count={pages}
-                color="primary"
-                size="large"
-                shape="rounded"
-                onChange={onChangePage}
-              />
-            </div>
+                {isLoading && <div className={styles.circularProgress}><CircularProgress /></div>}
+                {!isLoading && 
+                  <>
+                    <Table {...tableInformation}/>
+                    <div className={styles.pagination}>
+                      <Pagination 
+                      count={pages}
+                      color="primary"
+                      size="large"
+                      shape="rounded"
+                      onChange={onChangePage}
+                      page={page}
+                    />
+                    </div>
+                  </>
+                }
+              </div>
         </BaseStructure>
     )
 }

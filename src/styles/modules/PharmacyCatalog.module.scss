@@ -1,5 +1,12 @@
 @use "../colors";
 @use "../../styles/abstracts/variables";
+.circularProgress {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+}
 
 .container {
   display: flex;

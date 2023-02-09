@@ -44,10 +44,14 @@ export const pharmacySlice = createSlice({
     },
      setPharmacyInventoryPages: (state, action: PayloadAction<number>) => {
       state.pages = action.payload;
-    }
+    },
   },
   extraReducers: (builder) => {},
 });
 
-export const { setPharmacyData, setPharmacyDataLessQty, setPharmacyMedicineCatalogData,setPharmacyCatalogPages,setPharmacyInventoryPages } =
+export const { setPharmacyData,
+   setPharmacyDataLessQty,
+   setPharmacyMedicineCatalogData,
+  setPharmacyCatalogPages,
+  setPharmacyInventoryPages } =
   pharmacySlice.actions;

@@ -8,11 +8,14 @@ import {
   startFilterUtilities,
   startGetStorehouseList,
 } from "../../store/requests/thunks";
-import { Pagination } from "@mui/material";
+import { CircularProgress, Pagination } from "@mui/material";
 const ListAlmacen: NextPage = () => {
   const { inventory, inventoryLessQty, pages } = useAppSelector(
     (state) => state.storehouse
   );
+  let { isLoading } = useAppSelector(
+      (state) => state.ui
+    );
   const dispatch = useAppDispatch();
   const [utilityKey, setUtilityKey] = useState("");
   const [page, setPage] = useState(1);
@@ -25,6 +28,7 @@ const ListAlmacen: NextPage = () => {
           { id: "catalog_number", label: "No. de catálogo" },
           { id: "generic_name", label: "Nombre Generico" },
           { id: "storehouse_utility.final_presentation", label: "Presentación" },
+          { id: "semaforization_color", label: "" },
           { id: "expires_at", label: "Expira el" },
           { id: "quantity_presentation_left", label: "Cantidad" },
         ]
@@ -39,12 +43,12 @@ const ListAlmacen: NextPage = () => {
         ],
     rows: inventory,
     percentages: !showUtilitiesLessQty
-      ? [15, 15, 30, 40, 20, 13, 13]
+      ? [15, 15, 30, 40, 20, 0.5,13, 13]
       : [15, 40, 30, 15],
     textDisplay: !showUtilitiesLessQty
-      ? ["center", "center", "center", "start", "start", "center", "center"]
+      ? ["center", "center", "center", "start", "start","center", "center", "center"]
       : ["center", "start", "start", "center"],
-    elements: ["text", "text", "text", "text", "text", "text", "text"],
+    elements: ["TEXT", "TEXT", "TEXT", "TEXT", "TEXT","CIRCLE-INDICATOR", "TEXT", "TEXT"],
     keyName: "key",
   };
 
@@ -103,17 +107,22 @@ const ListAlmacen: NextPage = () => {
                 : "Mostrar por utilidades"}
             </button>
           </div>
-          <Table {...tableElements} />
-          <div className={styles.pagination}>
-              <Pagination
+          {isLoading && <div className={styles.circularProgress}><CircularProgress /></div>}
+          {!isLoading && 
+            <>
+              <Table {...tableElements} />
+              <div className={styles.pagination}>
+                <Pagination
                   count={pages}
                   color="primary"
                   size="large"
                   shape="rounded"
                   onChange={onChangePage}
+                  page={page}
                 />
-
             </div>
+            </>
+          }
         </div>
       </div>
     </div>

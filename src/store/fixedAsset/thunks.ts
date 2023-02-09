@@ -22,9 +22,12 @@ import {
 } from "../../interfaces/IFixedAssest.interface";
 import moment from "moment";
 import download from "downloadjs";
+import { setLoading } from "store/ui/uiSlice";
 
 export const startGetDepartments = () => async (dispatch: Dispatch) => {
+  dispatch(setLoading(true));
   const response = await cecanApi.get<IDepartments>("/departments?limit=100");
+  dispatch(setLoading(false));
   const departments = response.data.data.departments;
   const departmentsDateFixed = departments.map((department) => {
     department.created_at = moment(department.created_at).format("DD/MM/YYYY");
@@ -77,11 +80,11 @@ export const startGetFixedAssests =
       .map((entry) => `${entry[0]}=${entry[1]}`)
       .join("&");
     try {
+      dispatch(setLoading(true));
       const { data } = await cecanApi.get<IFixedAssetResponse>(
         `/fixed_assets?page=${page}&${queriesString}`
       );
-      console.log(data.data.fixed_assets);
-
+      setTimeout(() => { dispatch(setLoading(false)); }, 3000);
       const dataFixedAssets = data.data.fixed_assets.map((fixedAsset) => ({
         ...fixedAsset,
         created_at: moment(fixedAsset.created_at).format("DD/MM/YYYY"),
@@ -115,11 +118,17 @@ export const startAddingFixedAsset =
     );
   };
 
-export const startGetRequestFixedAssets = () => async (dispatch: Dispatch) => {
+export const startGetRequestFixedAssets = ( resetForm?: any,filters?:{department_id?:string, date?:string}) => async (dispatch: Dispatch) => {
+  const {department_id = "", date = ""} = filters || {};
+  dispatch(setLoading(true));
   const response = await cecanApi.get<IFixedAssetRequestResponse>(
-    "/fixed_assets_requests"
+    `/fixed_assets_requests?department_id=${department_id}&date=${date}`
   );
+  dispatch(setLoading(false));
   const fixedAssets = response.data.data.fixed_assets_requests;
+  if(fixedAssets.length === 0){
+    toast.error("No se encontraron solicitudes");
+  }
   dispatch(setFixedAssetsRequests(fixedAssets));
 };
 

@@ -14,6 +14,7 @@ import { IMedicineStock } from "../../interfaces/IMedicineStock.interface";
 import { IInventory } from "interfaces/IInventoryPharmacy.interface";
 import moment from "moment";
 import { setMedicines } from "store/recipes/recipesSlice";
+import { setLoading } from "store/ui/uiSlice";
 
 export const startGetPharmacyData =
   (filters?: {showLessQty?: boolean, concidence?: string}) => async (dispatch: Dispatch) => {
@@ -30,9 +31,11 @@ export const startGetPharmacyData =
           queryParams += `${key}=${value}&`;
         })
       }
+      dispatch(setLoading(true))
       const {
         data: { data, ok, pages },
       } = await cecanApi.get<IPharmacyDataResponse>(`/pharmacy_inventory${queryParams}`);
+      dispatch(setLoading(false));
       if (ok) {
           const dataMedicines = data.inventory.map((record) => {
             return {
@@ -150,9 +153,11 @@ export const startGetPharmacyCatalog = (filters?:{concidence?:string, page?:numb
         queryParams += `${key}=${value}&`;
       })
     }
+    dispatch(setLoading(true));
     const {
       data: { data, ok, pages},
     } = await cecanApi.get<IPharmacyCatalogResponse>(`/medicines${queryParams}`);
+    dispatch(setLoading(false));
     if (ok) {
       const dataMedicine = data.medicines.map((medicine) => (
           {

@@ -2,12 +2,12 @@ import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 
 export interface IUiState {
   isModalOpen: boolean;
-  loading: boolean;
+  isLoading: boolean;
 }
 
 const initialState: IUiState = {
   isModalOpen: false,
-  loading: false,
+  isLoading: true,
 };
 
 export const uiSlice = createSlice({
@@ -17,7 +17,10 @@ export const uiSlice = createSlice({
     toggleModal: (state) => {
       state.isModalOpen = !state.isModalOpen;
     },
+    setLoading: (state, action: PayloadAction<boolean>) => {
+      state.isLoading = action.payload;
+    }
   },
 });
 
-export const { toggleModal } = uiSlice.actions;
+export const { toggleModal,setLoading } = uiSlice.actions;

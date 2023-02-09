@@ -1,4 +1,4 @@
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   Sidebar,
   TopBar,
@@ -22,11 +22,14 @@ import { ITable } from "../../interfaces/ITable.interface";
 import { faSearch } from "@fortawesome/free-solid-svg-icons";
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import { IMedicineStock } from "interfaces/IMedicineStock.interface";
-import { Pagination } from "@mui/material";
+import { CircularProgress, Pagination } from "@mui/material";
 
 const PharmacyCatalog: NextPage = (props) => {
   let { pharmacyData, pharmacyDataLessQty, pages } = useAppSelector(
     (state) => state.pharmacy
+  );
+  let { isLoading } = useAppSelector(
+    (state) => state.ui
   );
   const dispatch = useAppDispatch();
 
@@ -34,8 +37,11 @@ const PharmacyCatalog: NextPage = (props) => {
   const [showLessQty, setShowLessQty] = useState(false);
   const [page, setPage] = useState(1);
 
+
   useEffect(() => {
     // if (!pharmacyData) {
+      // if (dataFetchedRef.current) return;
+      // dataFetchedRef.current = true;
       dispatch(startGetPharmacyData({showLessQty,concidence:medicineKey}));
     // }
   }, [medicineKey, showLessQty]);
@@ -76,20 +82,20 @@ const PharmacyCatalog: NextPage = (props) => {
     setmedicineKey(e.target.value);
   };
 
-  const onSubmitMedicineKey = (e) => {
-    e.preventDefault();
-    if (showLessQty) {
-      dispatch(
-        startFilterMedicine(
-          medicineKey,
-          pharmacyDataLessQty as IMedicineStock[],
-          "catalogLessQty"
-        )
-      );
-    } else {
-      dispatch(startFilterMedicine(medicineKey, pharmacyData, "catalog"));
-    }
-  };
+  // const onSubmitMedicineKey = (e) => {
+  //   e.preventDefault();
+  //   if (showLessQty) {
+  //     dispatch(
+  //       startFilterMedicine(
+  //         medicineKey,
+  //         pharmacyDataLessQty as IMedicineStock[],
+  //         "catalogLessQty"
+  //       )
+  //     );
+  //   } else {
+  //     dispatch(startFilterMedicine(medicineKey, pharmacyData, "catalog"));
+  //   }
+  // };
 
   const onShowLessQtyStocks = () => {
     setShowLessQty(!showLessQty);
@@ -108,7 +114,7 @@ const PharmacyCatalog: NextPage = (props) => {
             <Searcher
               placeholder="Busca por clave o nombre de medicamento"
               onChangeSearchValue={onMedicineKeyChange}
-              onSubmitSearch={onSubmitMedicineKey}
+              // onSubmitSearch={onSubmitMedicineKey}
               value={medicineKey}
             />
             <button
@@ -120,6 +126,8 @@ const PharmacyCatalog: NextPage = (props) => {
                 : "Ver por los stocks"}
             </button>
           </div>
+          {isLoading && <div className={styles.circularProgress}><CircularProgress /></div>}
+          {!isLoading && <>
           <Table {...tableInformation} />
           <div className={styles.pagination}>
               <Pagination
@@ -128,9 +136,11 @@ const PharmacyCatalog: NextPage = (props) => {
                   size="large"
                   shape="rounded"
                   onChange={onChangePage}
+                  page={page}
                 />
 
             </div>
+          </>}
     </div>
     </BaseStructure>
     // <div className={styles.container}>

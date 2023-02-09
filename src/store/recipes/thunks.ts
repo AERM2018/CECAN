@@ -20,6 +20,7 @@ import {
 } from "store/historial/historialSlice";
 import { setActiveRecipe } from "store/recipes/recipesSlice";
 import { URL } from "url";
+import { setLoading } from "store/ui/uiSlice";
 
 export const startGenerateRecipe =
   ({ patient_name, instructions, observations, medicines }: IPrescription) =>
@@ -123,12 +124,13 @@ export const startGetMedicines = (concidence?:string) => async (dispatch: Dispat
 
 export const startGetHistorialPrescriptions =
   (id?: string) => async (dispatch: Dispatch) => {
+    dispatch(setLoading(true))
     const {
       data: { data, ok },
     } = await cecanApi.get<IPrescriptionResponse>(
       `/prescriptions${id === "" ? "" : `?user_id=${id}`}`
     );
-
+    dispatch(setLoading(false))
     if (ok) {
       dispatch(
         setPrescriptionHistory(

@@ -16,12 +16,15 @@ import {
   startFilterPrescriptionHistory,
   startGetHistorialPrescriptions,
 } from "store/recipes/thunks";
-import { Modal } from "@mui/material";
+import { CircularProgress, Modal } from "@mui/material";
 import { useSession } from "next-auth/react";
 
 const Historial: NextPage = () => {
   const { prescriptions, activePrescription } = useAppSelector(
     (state) => state.historial
+  );
+  let { isLoading } = useAppSelector(
+    (state) => state.ui
   );
   const { user } = useAppSelector((state) => state.auth);
   const dispatch = useAppDispatch();
@@ -96,17 +99,13 @@ const Historial: NextPage = () => {
               value={folio}
             />
           </div>
-          <Table {...tableElements} />
+          {isLoading && <div className={styles.circularProgress}><CircularProgress /></div>}
+          {!isLoading && 
+            <>
+            <Table {...tableElements} />
+            </>
+          }
         </div>
-
-        {/* {activePrescription && (
-          <Modal
-            open={activePrescription !== null}
-            onClose={() => dispatch(setActivePrescriptionHistory(null))}
-          >
-            <div className="modalContainer">asdfasdf</div>
-          </Modal>
-        )} */}
       </div>
     </div>
   );

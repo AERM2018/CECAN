@@ -7,10 +7,13 @@ import {
   startGetFixedAssests,
   startUploadingFixedAssetFile,
 } from "store/fixedAsset/thunks";
-import { createTheme, Pagination, ThemeProvider } from "@mui/material";
+import { CircularProgress, createTheme, Pagination, ThemeProvider } from "@mui/material";
 
 const FixedAsset = () => {
   const { pages, fixedAssets } = useAppSelector((state) => state.fixedAsset);
+  let { isLoading } = useAppSelector(
+      (state) => state.ui
+    );
   const dispatch = useAppDispatch();
   const [currentPage, setCurrentPage] = useState(1);
   const [query, setQuery] = useState("");
@@ -25,6 +28,7 @@ const FixedAsset = () => {
 
   const onChangeQuery = (e) => {
     setQuery(e.target.value);
+    setCurrentPage(1)
   };
 
   const onSubmitQuery = (e) => {
@@ -109,16 +113,23 @@ const FixedAsset = () => {
                 type="file"
               />
             </div>
-            <Table {...tableElements} />
-            <div className={styles.pagination}>
-              <Pagination
-                count={pages}
-                color="primary"
-                size="large"
-                shape="rounded"
-                onChange={onChangePage}
-              />
-            </div>
+             {isLoading && <div className={styles.circularProgress}><CircularProgress /></div>}
+            {!isLoading && 
+            <>
+              <Table {...tableElements} />
+              <div className={styles.pagination}>
+                <Pagination
+                  count={pages}
+                  color="primary"
+                  size="large"
+                  shape="rounded"
+                  onChange={onChangePage}
+                  page={currentPage}
+                />
+              </div>
+            </>
+            }   
+
           </div>
         </div>
       </div>

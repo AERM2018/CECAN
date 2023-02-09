@@ -1,4 +1,4 @@
-import { Pagination } from "@mui/material";
+import { CircularProgress, Pagination } from "@mui/material";
 import { BaseStructure, Searcher, Table } from "components";
 import { useAppDispatch, useAppSelector } from "hooks/hooks";
 import { ITable } from "interfaces/ITable.interface";
@@ -9,6 +9,9 @@ import styles from '../../styles/modules/GenerateRecipe.module.scss'
 
 const PharmacyCatalog: NextPage = () => {
     const {pharmacyMedicineCatalogData, pages} = useAppSelector((state) => state.pharmacy)
+    let { isLoading } = useAppSelector(
+      (state) => state.ui
+    );
     const dispatch = useAppDispatch()
     const [medicineKey, setMedicineKey] = useState("")
     const [page, setPage] = useState(1)
@@ -64,17 +67,23 @@ const PharmacyCatalog: NextPage = () => {
               placeholder="Buscar medicamento"
             />
           </div>
-            <Table {...tableInformation}/>
-            <div className={styles.pagination}>
-              <Pagination
-                  count={pages}
-                  color="primary"
-                  size="large"
-                  shape="rounded"
-                  onChange={onChangePage}
-                />
+          {isLoading && <div className={styles.circularProgress}><CircularProgress /></div>}
+          {!isLoading && 
+            <>
+              <Table {...tableInformation}/>
+              <div className={styles.pagination}>
+                <Pagination
+                    count={pages}
+                    color="primary"
+                    size="large"
+                    shape="rounded"
+                    onChange={onChangePage}
+                    page={page}
+                  />
 
-            </div>
+              </div>
+            </>
+          }
         </div>
         </BaseStructure>
     );

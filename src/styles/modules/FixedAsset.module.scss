@@ -1,3 +1,5 @@
+@use "../colors";
+@use "../abstracts/variables";
 .container {
 }
 
@@ -51,9 +53,61 @@
     border: 1px solid #e5e5e5;
     box-shadow: 0 3px 5px 1px rgba(0, 0, 0, 0.1);
     padding: 2rem;
+
+    .card_options {
+        display: flex;
+        justify-content: flex-end;
+        .close{
+            cursor: pointer;
+                transition: all 0.2s ease-in-out;
+            
+                &:hover {
+                    color: red;
+                }
+            
+                font-size: 21px;
+        }
+    }
 }
 
 .itemCard {
     border: solid 1px #e5e5e5;
     padding: 1rem;
+}
+
+.sizedBox {
+    height: 1.5rem;
+}
+
+.button_filled {
+    width: 20%;
+    height: 4rem;
+    border-radius: 1rem;
+    border: none;
+    color: colors.$color-white;
+    background-color: colors.$primary;
+    font-size: variables.$h3-font-size;
+    font-family: "Roboto", sans-serif;
+    margin-top: 1rem;
+    margin-left: 3rem;
+}
+
+.button_outlined {
+    width: 20rem;
+    height: 4rem;
+    border-radius: 1rem;
+    border: 1px solid colors.$primary;
+    color: colors.$primary;
+    font-size: variables.$h3-font-size;
+    font-family: "Roboto", sans-serif;
+    margin-top: 1rem;
+    margin-left: 3rem;
+}
+
+.circularProgress {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    height: 30%;
+    width: 100%;
 }

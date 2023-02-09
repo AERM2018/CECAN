@@ -10,9 +10,13 @@ import {
   startGetDepartments,
 } from "store/fixedAsset/thunks";
 import { startGetUsers } from "store/users/thunks";
+import { CircularProgress } from "@mui/material";
 
 const Departments: NextPage = (props) => {
   const { departments } = useAppSelector((state) => state.fixedAsset);
+   let { isLoading } = useAppSelector(
+      (state) => state.ui
+    );
   const dispatch = useAppDispatch();
 
   useEffect(() => {
@@ -50,7 +54,12 @@ const Departments: NextPage = (props) => {
       <TitleScreen title="Departamentos" />
       <div className={styles.content}>
         <Sidebar />
-        <Table {...tableInformation} />
+        {isLoading && <div className={styles.circularProgress}><CircularProgress /></div>}
+          {!isLoading && 
+            <>
+                <Table {...tableInformation} />
+            </>
+          }
       </div>
     </div>
   );

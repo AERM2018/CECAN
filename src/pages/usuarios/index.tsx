@@ -6,9 +6,13 @@ import { ITable } from "../../interfaces/ITable.interface";
 import { useAppDispatch, useAppSelector } from "hooks/hooks";
 import { startGetStorehouseList } from "../../store/requests/thunks";
 import { startGetUsers } from "store/users/thunks";
+import { CircularProgress } from "@mui/material";
 
 const Users: NextPage = () => {
   const { users } = useAppSelector((state) => state.users);
+   let { isLoading } = useAppSelector(
+      (state) => state.ui
+    );
 
   const dispatch = useAppDispatch();
 
@@ -39,7 +43,13 @@ const Users: NextPage = () => {
       <TitleScreen title="Usuarios" />
       <div className={styles.content}>
         <Sidebar />
-        <Table {...tableElements} />
+        {isLoading && <div className={styles.circularProgress}><CircularProgress /></div>}
+          {!isLoading && 
+            <>
+               <Table {...tableElements} />
+            </>
+          }
+       
       </div>
     </div>
   );

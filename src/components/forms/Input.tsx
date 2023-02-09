@@ -30,7 +30,7 @@ export const Input: FC<Props> = ({
         {...field}
       >
         <option value="" selected disabled>
-          Seleccione una opción
+         {placeholder || "Seleccione una opción"}
         </option>
 
         {options?.map((option) => (

@@ -15,8 +15,12 @@ import {
   findRequestByFolio,
   setActiveRequest,
 } from "store/requests/requests.slice";
+import { CircularProgress } from "@mui/material";
 const Almacen: NextPage = () => {
   const { requests } = useAppSelector((state) => state.storehouse);
+  let { isLoading } = useAppSelector(
+      (state) => state.ui
+  );  
   const dispatch = useAppDispatch();
   const router = useRouter();
   const [requestFolio, setRequestFolio] = useState("");
@@ -74,7 +78,14 @@ const Almacen: NextPage = () => {
               placeholder="Busca por folio de solicitud"
             />
           </div>
-          <Table {...tableElements} />
+         {isLoading && <div className={styles.circularProgress}><CircularProgress /></div>}
+          {!isLoading && 
+            <>
+              <Table {...tableElements}/>
+              <div className={styles.pagination}>
+              </div>
+            </>
+          }
         </div>
       </div>
     </div>
