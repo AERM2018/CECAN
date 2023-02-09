@@ -11,21 +11,14 @@ import { useAppDispatch } from "hooks/hooks";
 import { startLogin, renewToken } from "store/auth/thunks";
 import { ThemeProvider } from "@emotion/react";
 import { createTheme } from "@mui/system";
+import { useGetAccess } from "hooks/useGetAccess";
 
 function MyApp({ Component, pageProps: { session, ...pageProps } }: AppProps) {
   useEffect(() => {
     (async () => {
       const sessionData = await getSession();
-      console.log("NEXT-AUTH",process.env.NEXTAUTH_URL);
-      if (sessionData) {
-        if (!sessionData.user.token && Router.pathname !== "/login") {
-          Router.push("/login");
-        } else if (sessionData.user.token && Router.pathname === "/login") {
-          Router.push("/login");
-        }
-      }else{
-        Router.push("/login");
-      }
+      // For now, we are not using the session data, until we have a way to get the user allowed routes inside this hook
+       Router.push("/login");
     })();
     // const token = localStorage.getItem("token");
     // console.log(token);
