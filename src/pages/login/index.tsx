@@ -3,6 +3,7 @@ import styles from "styles/modules/Login.module.scss";
 import * as Yup from "yup";
 import { TopBar } from "components";
 import { useAppDispatch } from "hooks/hooks";
+import { useGetAccess } from "hooks/useGetAccess";
 import { startLogin } from "../../store/auth/thunks";
 import { NextPage } from "next";
 import { useSession } from "next-auth/react";
@@ -35,6 +36,12 @@ const Login: NextPage = () => {
   });
 
   const { data, status } = useSession();
+
+  //If data exists, redirect to home page
+  const items = useGetAccess(data.user.user.role.name);
+  if(items && items.length != 0){
+    router.push(items[0].path)
+  }
 
   return (
     <div className={styles.container}>
