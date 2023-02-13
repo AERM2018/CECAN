@@ -38,10 +38,10 @@ const Login: NextPage = () => {
   const { data, status } = useSession();
 
   //If data exists, redirect to home page
-  const items = useGetAccess(data.user.user.role.name);
-  if(items && items.length != 0){
-    router.push(items[0].path)
-  }
+    const items = useGetAccess(data.user.user.role.name || "");
+    if(items && items.length != 0){
+      router.push(items[0].path)
+    }
 
   return (
     <div className={styles.container}>
