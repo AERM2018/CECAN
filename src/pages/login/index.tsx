@@ -8,6 +8,7 @@ import { startLogin } from "../../store/auth/thunks";
 import { NextPage } from "next";
 import { useSession } from "next-auth/react";
 import { useRouter } from "next/router";
+import { useState } from "react";
 
 const validationSchema = Yup.object({
   username: Yup.string().required("Requerido"),
@@ -18,6 +19,7 @@ const Login: NextPage = () => {
   const dispatch = useAppDispatch();
   const router = useRouter();
   // const items = useGetAccess(data.user.role.name);
+  const [userRole, setUserRole] = useState("")
   const formik = useFormik({
     initialValues: {
       username: "",
@@ -38,7 +40,7 @@ const Login: NextPage = () => {
   const { data, status } = useSession();
 
   //If data exists, redirect to home page
-    const items = useGetAccess(data.user.user.role.name || "");
+    const items = useGetAccess(data?.user.user.role.name || "");
     if(items && items.length != 0){
       router.push(items[0].path)
     }

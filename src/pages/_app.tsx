@@ -19,8 +19,8 @@ function MyApp({ Component, pageProps: { session, ...pageProps } }: AppProps) {
       const sessionData = await getSession();
       // For now, we are not using the session data, until we have a way to get the user allowed routes inside this hook
       // if(!sessionData){
+        Router.push("/login");
       // }
-      Router.push("/login");
     })();
     // const token = localStorage.getItem("token");
     // console.log(token);
