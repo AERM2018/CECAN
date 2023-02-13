@@ -19,8 +19,8 @@ const Login: NextPage = () => {
   // const items = useGetAccess(data.user.role.name);
   const formik = useFormik({
     initialValues: {
-      username: "admin@cecan.com",
-      password: "Qwerty*123",
+      username: "",
+      password: "",
     },
     validationSchema,
     onSubmit: (values) => {
